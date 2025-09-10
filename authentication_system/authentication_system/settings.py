@@ -1,6 +1,10 @@
 from pathlib import Path
 import ldap
+import os 
+from dotenv import load_dotenv
 from django_auth_ldap.config import LDAPSearch, GroupOfNamesType
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -118,17 +122,17 @@ AUTHENTICATION_BACKEND = [
     
 ]
 
-AUTH_LDAP_SERVER_URI = "ldap://ldap.example.com" # Or "ldaps://ad.example.com"
+AUTH_LDAP_SERVER_URI = os.getenv('AUTH_LDAP_SERVER_URI')
 
 # The credentials for a "bind" user. This is a service account that has
 # permissions to search the directory.
-AUTH_LDAP_BIND_DN = "cn=admin,dc=wireless,dc=iucaa,dc=in"
-AUTH_LDAP_BIND_PASSWORD = "iucaa" # Use environment variables!
+AUTH_LDAP_BIND_DN = os.getenv('BIND_DN')
+AUTH_LDAP_BIND_PASSWORD = os.getenv('BIND_PASSWORD')
 
 # The search base and filter for finding users.
 # %(user)s will be replaced with the username entered by the user.
 AUTH_LDAP_USER_SEARCH = LDAPSearch(
-    "ou=people,dc=example,dc=com",  # The base DN to search
+    os.getenv('SEARCH_BASE_DN'),
     ldap.SCOPE_SUBTREE,            # The scope of the search
     "(uid=%(user)s)"               # The search filter
     # For Active Directory, you might use: "(sAMAccountName=%(user)s)"
