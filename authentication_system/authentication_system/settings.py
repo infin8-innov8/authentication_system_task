@@ -9,6 +9,9 @@ from django_auth_ldap.config import LDAPSearch, GroupOfNamesType
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+#the custom model is used # Register your models here.
+
+AUTH_USER_MODEL = 'accounts.UserAccount'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
