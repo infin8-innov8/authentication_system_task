@@ -6,3 +6,6 @@ def registration_page(request) :
     
 def verification_page(request) : 
     return render(request, 'verificationtemp.html')
+
+def login_page(request) : 
+    return render(request, 'logintemp.html')
