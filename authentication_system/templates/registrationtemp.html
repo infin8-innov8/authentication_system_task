@@ -47,11 +47,6 @@
         margin-bottom: 5px;
       }
 
-      .registration-header p {
-        font-size: 14px;
-        opacity: 0.9;
-      }
-
       .registration-form {
         padding: 30px;
       }
@@ -131,24 +126,6 @@
       .optional {
         color: #999;
         font-weight: normal;
-      }
-
-      .register-button {
-        width: 100%;
-        padding: 14px;
-        background: #2575fc;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background 0.3s;
-        margin-top: 10px;
-      }
-
-      .register-button:hover {
-        background: #1c64e0;
       }
 
       .login-link {
@@ -263,7 +240,6 @@
             id="email"
             placeholder="Enter your email address"
             name="email"
-            requ
           />
           <div class="error-message" id="emailError">
             Please enter a valid email address
@@ -292,8 +268,6 @@
           </div>
         </div>
 
-        <button class="register-button">Create Account</button>
-
         <div class="login-link">
           Already have an account? <a href="#">Sign In</a>
         </div>
@@ -308,7 +282,6 @@
         const emailInput = document.getElementById("email");
         const phoneInput = document.getElementById("phone");
         const verifyBtn = document.getElementById("verifyBtn");
-        const registerButton = document.querySelector(".register-button");
 
         // Validation patterns
         const namePattern = /^[a-zA-Z]+$/;
@@ -400,68 +373,6 @@
             if (phoneInput.value !== "") {
               phoneInput.disabled = true;
             }
-          }
-        });
-
-        // Register button
-        registerButton.addEventListener("click", function () {
-          let isValid = true;
-
-          // Validate first name
-          if (!namePattern.test(firstNameInput.value)) {
-            document.getElementById("firstNameError").style.display = "block";
-            firstNameInput.style.borderColor = "#d9534f";
-            isValid = false;
-          }
-
-          // Validate last name
-          if (!namePattern.test(lastNameInput.value)) {
-            document.getElementById("lastNameError").style.display = "block";
-            lastNameInput.style.borderColor = "#d9534f";
-            isValid = false;
-          }
-
-          // Validate username
-          if (!usernamePattern.test(usernameInput.value)) {
-            document.getElementById("usernameError").style.display = "block";
-            usernameInput.style.borderColor = "#d9534f";
-            isValid = false;
-          }
-
-          // Validate email
-          if (!emailPattern.test(emailInput.value)) {
-            document.getElementById("emailError").style.display = "block";
-            emailInput.style.borderColor = "#d9534f";
-            isValid = false;
-          }
-
-          // Validate phone (if provided)
-          if (phoneInput.value !== "" && !phonePattern.test(phoneInput.value)) {
-            document.getElementById("phoneError").style.display = "block";
-            phoneInput.style.borderColor = "#d9534f";
-            isValid = false;
-          }
-
-          // Check if verification was sent
-          if (!verifyBtn.classList.contains("verified")) {
-            alert(
-              "Please verify your email and phone number before registering"
-            );
-            isValid = false;
-          }
-
-          if (isValid) {
-            this.textContent = "Creating Account...";
-            this.disabled = true;
-
-            // Simulate registration process
-            setTimeout(function () {
-              alert(
-                "Registration successful! You will be redirected to the OTP verification page."
-              );
-              registerButton.textContent = "Create Account";
-              registerButton.disabled = false;
-            }, 1500);
           }
         });
       });
