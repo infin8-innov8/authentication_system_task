@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Organization Registration</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+      }
+
+      .registration-container {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        width: 100%;
+        max-width: 500px;
+        overflow: hidden;
+      }
+
+      .registration-header {
+        background: #2575fc;
+        color: white;
+        padding: 25px 30px;
+        text-align: center;
+      }
+
+      .registration-header h1 {
+        font-weight: 600;
+        font-size: 24px;
+        margin-bottom: 5px;
+      }
+
+      .registration-header p {
+        font-size: 14px;
+        opacity: 0.9;
+      }
+
+      .registration-form {
+        padding: 30px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+        position: relative;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: #333;
+        font-size: 14px;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 14px 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 15px;
+        transition: all 0.3s;
+      }
+
+      .form-group input:focus {
+        outline: none;
+        border-color: #2575fc;
+        box-shadow: 0 0 0 2px rgba(37, 117, 252, 0.2);
+      }
+
+      .name-fields {
+        display: flex;
+        gap: 15px;
+      }
+
+      .name-fields .form-group {
+        flex: 1;
+      }
+
+      .verification-button {
+        margin-top: 10px;
+      }
+
+      .verify-btn {
+        width: 100%;
+        padding: 12px;
+        background: #f1f8ff;
+        color: #2575fc;
+        border: 1px solid #2575fc;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .verify-btn:hover {
+        background: #2575fc;
+        color: white;
+      }
+
+      .verified {
+        background: #4caf50;
+        color: white;
+        border-color: #4caf50;
+      }
+
+      .phone-format,
+      .username-format {
+        font-size: 12px;
+        color: #777;
+        margin-top: 4px;
+      }
+
+      .optional {
+        color: #999;
+        font-weight: normal;
+      }
+
+      .register-button {
+        width: 100%;
+        padding: 14px;
+        background: #2575fc;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s;
+        margin-top: 10px;
+      }
+
+      .register-button:hover {
+        background: #1c64e0;
+      }
+
+      .login-link {
+        text-align: center;
+        font-size: 14px;
+        color: #555;
+        margin-top: 20px;
+      }
+
+      .login-link a {
+        color: #2575fc;
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .login-link a:hover {
+        text-decoration: underline;
+      }
+
+      .error-message {
+        color: #d9534f;
+        font-size: 12px;
+        margin-top: 5px;
+        display: none;
+      }
+
+      .success-message {
+        color: #4caf50;
+        font-size: 12px;
+        margin-top: 5px;
+        display: none;
+      }
+
+      @media (max-width: 500px) {
+        .registration-container {
+          border-radius: 10px;
+        }
+
+        .registration-header {
+          padding: 20px;
+        }
+
+        .registration-form {
+          padding: 20px;
+        }
+
+        .name-fields {
+          flex-direction: column;
+          gap: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="registration-container">
+      <div class="registration-header">
+        <h1>Create Your Profile</h1>
+      </div>
+
+      <div class="registration-form">
+        <div class="name-fields">
+          <div class="form-group">
+            <label for="firstName">First Name</label>
+            <input
+              type="text"
+              id="firstName"
+              placeholder="Enter your first name"
+              name="first_name"
+              required
+            />
+            <div class="error-message" id="firstNameError">
+              No spaces or symbols allowed
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="lastName">Last Name</label>
+            <input
+              type="text"
+              id="lastName"
+              placeholder="Enter your last name"
+              name="last_name"
+              required
+            />
+            <div class="error-message" id="lastNameError">
+              No spaces or symbols allowed
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input
+            type="text"
+            id="username"
+            placeholder="Enter your username"
+            name="username"
+            required
+          />
+          <div class="username-format">
+            Allowed characters: A-Z, a-z, 0-9, _
+          </div>
+          <div class="error-message" id="usernameError">
+            Only letters, numbers, and underscores are allowed
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input
+            type="email"
+            id="email"
+            placeholder="Enter your email address"
+            name="email"
+            requ
+          />
+          <div class="error-message" id="emailError">
+            Please enter a valid email address
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="phone"
+            >Phone Number <span class="optional">(optional)</span></label
+          >
+          <input type="text" id="phone" placeholder="XXXX XX XXXX" />
+          <div class="phone-format">
+            Format: XXXX XX XXXX (e.g., 1234 56 7890)
+          </div>
+          <div class="error-message" id="phoneError">
+            Please use the format XXXX XX XXXX
+          </div>
+        </div>
+
+        <div class="verification-button">
+          <button class="verify-btn" id="verifyBtn">
+            Verify Email & Phone
+          </button>
+          <div class="success-message" id="verificationStatus">
+            Verification codes sent to your email and phone
+          </div>
+        </div>
+
+        <button class="register-button">Create Account</button>
+
+        <div class="login-link">
+          Already have an account? <a href="#">Sign In</a>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const firstNameInput = document.getElementById("firstName");
+        const lastNameInput = document.getElementById("lastName");
+        const usernameInput = document.getElementById("username");
+        const emailInput = document.getElementById("email");
+        const phoneInput = document.getElementById("phone");
+        const verifyBtn = document.getElementById("verifyBtn");
+        const registerButton = document.querySelector(".register-button");
+
+        // Validation patterns
+        const namePattern = /^[a-zA-Z]+$/;
+        const usernamePattern = /^[a-zA-Z0-9_]+$/;
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const phonePattern = /^\d{4} \d{2} \d{4}$/;
+
+        // Validate first name
+        firstNameInput.addEventListener("input", function () {
+          if (!namePattern.test(this.value) && this.value !== "") {
+            document.getElementById("firstNameError").style.display = "block";
+            this.style.borderColor = "#d9534f";
+          } else {
+            document.getElementById("firstNameError").style.display = "none";
+            this.style.borderColor = "#ddd";
+          }
+        });
+
+        // Validate last name
+        lastNameInput.addEventListener("input", function () {
+          if (!namePattern.test(this.value) && this.value !== "") {
+            document.getElementById("lastNameError").style.display = "block";
+            this.style.borderColor = "#d9534f";
+          } else {
+            document.getElementById("lastNameError").style.display = "none";
+            this.style.borderColor = "#ddd";
+          }
+        });
+
+        // Validate username
+        usernameInput.addEventListener("input", function () {
+          if (!usernamePattern.test(this.value) && this.value !== "") {
+            document.getElementById("usernameError").style.display = "block";
+            this.style.borderColor = "#d9534f";
+          } else {
+            document.getElementById("usernameError").style.display = "none";
+            this.style.borderColor = "#ddd";
+          }
+        });
+
+        // Validate email
+        emailInput.addEventListener("input", function () {
+          if (!emailPattern.test(this.value) && this.value !== "") {
+            document.getElementById("emailError").style.display = "block";
+            this.style.borderColor = "#d9534f";
+          } else {
+            document.getElementById("emailError").style.display = "none";
+            this.style.borderColor = "#ddd";
+          }
+        });
+
+        // Validate phone format
+        phoneInput.addEventListener("input", function () {
+          if (!phonePattern.test(this.value) && this.value !== "") {
+            document.getElementById("phoneError").style.display = "block";
+            this.style.borderColor = "#d9534f";
+          } else {
+            document.getElementById("phoneError").style.display = "none";
+            this.style.borderColor = "#ddd";
+          }
+        });
+
+        // Verify button
+        verifyBtn.addEventListener("click", function () {
+          let isValid = true;
+
+          // Validate email
+          if (!emailPattern.test(emailInput.value)) {
+            document.getElementById("emailError").style.display = "block";
+            emailInput.style.borderColor = "#d9534f";
+            isValid = false;
+          }
+
+          // Validate phone (if provided)
+          if (phoneInput.value !== "" && !phonePattern.test(phoneInput.value)) {
+            document.getElementById("phoneError").style.display = "block";
+            phoneInput.style.borderColor = "#d9534f";
+            isValid = false;
+          }
+
+          if (isValid) {
+            this.classList.add("verified");
+            this.textContent = "Verification Sent";
+            document.getElementById("verificationStatus").style.display =
+              "block";
+
+            // Disable email and phone fields after verification
+            emailInput.disabled = true;
+            if (phoneInput.value !== "") {
+              phoneInput.disabled = true;
+            }
+          }
+        });
+
+        // Register button
+        registerButton.addEventListener("click", function () {
+          let isValid = true;
+
+          // Validate first name
+          if (!namePattern.test(firstNameInput.value)) {
+            document.getElementById("firstNameError").style.display = "block";
+            firstNameInput.style.borderColor = "#d9534f";
+            isValid = false;
+          }
+
+          // Validate last name
+          if (!namePattern.test(lastNameInput.value)) {
+            document.getElementById("lastNameError").style.display = "block";
+            lastNameInput.style.borderColor = "#d9534f";
+            isValid = false;
+          }
+
+          // Validate username
+          if (!usernamePattern.test(usernameInput.value)) {
+            document.getElementById("usernameError").style.display = "block";
+            usernameInput.style.borderColor = "#d9534f";
+            isValid = false;
+          }
+
+          // Validate email
+          if (!emailPattern.test(emailInput.value)) {
+            document.getElementById("emailError").style.display = "block";
+            emailInput.style.borderColor = "#d9534f";
+            isValid = false;
+          }
+
+          // Validate phone (if provided)
+          if (phoneInput.value !== "" && !phonePattern.test(phoneInput.value)) {
+            document.getElementById("phoneError").style.display = "block";
+            phoneInput.style.borderColor = "#d9534f";
+            isValid = false;
+          }
+
+          // Check if verification was sent
+          if (!verifyBtn.classList.contains("verified")) {
+            alert(
+              "Please verify your email and phone number before registering"
+            );
+            isValid = false;
+          }
+
+          if (isValid) {
+            this.textContent = "Creating Account...";
+            this.disabled = true;
+
+            // Simulate registration process
+            setTimeout(function () {
+              alert(
+                "Registration successful! You will be redirected to the OTP verification page."
+              );
+              registerButton.textContent = "Create Account";
+              registerButton.disabled = false;
+            }, 1500);
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

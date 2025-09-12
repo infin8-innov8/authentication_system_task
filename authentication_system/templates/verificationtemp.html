@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verification Page</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+      }
+
+      .verification-container {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        width: 100%;
+        max-width: 500px;
+        padding: 25px;
+      }
+
+      .verification-header {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .verification-header h1 {
+        font-size: 22px;
+        color: #2575fc;
+      }
+
+      .otp-section {
+        margin-bottom: 20px;
+      }
+
+      .otp-label {
+        font-size: 14px;
+        margin-bottom: 8px;
+        display: block;
+        color: #333;
+        font-weight: 500;
+      }
+
+      .otp-inputs {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+      }
+
+      .otp-inputs input {
+        width: 40px;
+        height: 45px;
+        text-align: center;
+        font-size: 18px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        transition: 0.3s;
+      }
+
+      .otp-inputs input:focus {
+        border-color: #2575fc;
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(37, 117, 252, 0.2);
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 500;
+        color: #333;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: 0.3s;
+      }
+
+      .form-group input:focus {
+        border-color: #2575fc;
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(37, 117, 252, 0.2);
+      }
+
+      .register-btn {
+        display: inline-block;
+        text-align: center;
+        width: 100%;
+        padding: 12px;
+        background: #2575fc;
+        color: white;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        transition: 0.3s;
+      }
+
+      .register-btn:hover {
+        background: #1c64e0;
+      }
+
+      .error-message {
+        color: #d9534f;
+        font-size: 12px;
+        margin-top: 4px;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="verification-container">
+      <div class="verification-header">
+        <h1>Verify Your Details</h1>
+      </div>
+
+      <!-- Phone OTP -->
+      <div class="otp-section">
+        <label class="otp-label">Enter Phone OTP</label>
+        <div class="otp-inputs" id="phoneOtp">
+          <input type="text" maxlength="1" />
+          <input type="text" maxlength="1" />
+          <input type="text" maxlength="1" />
+          <input type="text" maxlength="1" />
+          <input type="text" maxlength="1" />
+          <input type="text" maxlength="1" />
+        </div>
+      </div>
+
+      <!-- Email OTP -->
+      <div class="otp-section">
+        <label class="otp-label">Enter Email OTP</label>
+        <div class="otp-inputs" id="emailOtp">
+          <input type="text" maxlength="1" />
+          <input type="text" maxlength="1" />
+          <input type="text" maxlength="1" />
+          <input type="text" maxlength="1" />
+          <input type="text" maxlength="1" />
+          <input type="text" maxlength="1" />
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="form-group">
+        <label for="password">Set Password</label>
+        <input
+          type="password"
+          id="password"
+          placeholder="Enter password"
+          required
+        />
+        <div class="error-message" id="passwordError">
+          Must contain 1 uppercase, 1 lowercase, and 1 special character
+        </div>
+      </div>
+
+      <!-- Register button with href -->
+      <a href="success.html" class="register-btn" id="registerBtn">Register</a>
+    </div>
+
+    <script>
+      function setupOtpInputs(containerId) {
+        const inputs = document.querySelectorAll(`#${containerId} input`);
+
+        inputs.forEach((input, index) => {
+          input.addEventListener("input", (e) => {
+            if (input.value.length === 1 && index < inputs.length - 1) {
+              inputs[index + 1].focus();
+            }
+          });
+
+          input.addEventListener("keydown", (e) => {
+            if (e.key === "Backspace" && !input.value && index > 0) {
+              inputs[index - 1].focus();
+            }
+          });
+
+          input.addEventListener("paste", (e) => {
+            const pasteData = e.clipboardData.getData("text").trim();
+            if (/^\d{6}$/.test(pasteData)) {
+              pasteData.split("").forEach((char, i) => {
+                if (inputs[i]) inputs[i].value = char;
+              });
+              inputs[inputs.length - 1].focus();
+              e.preventDefault();
+            }
+          });
+        });
+      }
+
+      // Setup OTP boxes
+      setupOtpInputs("phoneOtp");
+      setupOtpInputs("emailOtp");
+
+      // Password validation
+      const passwordInput = document.getElementById("password");
+      const passwordError = document.getElementById("passwordError");
+      const registerBtn = document.getElementById("registerBtn");
+
+      registerBtn.addEventListener("click", (e) => {
+        const password = passwordInput.value;
+        const validPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{6,}$/;
+
+        if (!validPattern.test(password)) {
+          e.preventDefault();
+          passwordError.style.display = "block";
+          passwordInput.style.borderColor = "#d9534f";
+        } else {
+          passwordError.style.display = "none";
+          passwordInput.style.borderColor = "#ddd";
+        }
+      });
+    </script>
+  </body>
+</html>
