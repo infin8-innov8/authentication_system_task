@@ -113,6 +113,7 @@
         cursor: pointer;
         text-decoration: none;
         transition: 0.3s;
+        border: none;
       }
 
       .register-btn:hover {
@@ -121,6 +122,13 @@
 
       .error-message {
         color: #d9534f;
+        font-size: 12px;
+        margin-top: 4px;
+        display: none;
+      }
+
+      .success-message {
+        color: #4caf50;
         font-size: 12px;
         margin-top: 4px;
         display: none;
@@ -137,27 +145,29 @@
       <div class="otp-section">
         <label class="otp-label">Enter Phone OTP</label>
         <div class="otp-inputs" id="phoneOtp">
-          <input type="text" maxlength="1" />
-          <input type="text" maxlength="1" />
-          <input type="text" maxlength="1" />
-          <input type="text" maxlength="1" />
-          <input type="text" maxlength="1" />
-          <input type="text" maxlength="1" />
+          <input type="text" maxlength="1" name="phone_otp_1" />
+          <input type="text" maxlength="1" name="phone_otp_2" />
+          <input type="text" maxlength="1" name="phone_otp_3" />
+          <input type="text" maxlength="1" name="phone_otp_4" />
+          <input type="text" maxlength="1" name="phone_otp_5" />
+          <input type="text" maxlength="1" name="phone_otp_6" />
         </div>
       </div>
+      <input type="hidden" name="phone_otp" id="phoneOtpComplete" />
 
       <!-- Email OTP -->
       <div class="otp-section">
         <label class="otp-label">Enter Email OTP</label>
         <div class="otp-inputs" id="emailOtp">
-          <input type="text" maxlength="1" />
-          <input type="text" maxlength="1" />
-          <input type="text" maxlength="1" />
-          <input type="text" maxlength="1" />
-          <input type="text" maxlength="1" />
-          <input type="text" maxlength="1" />
+          <input type="text" maxlength="1" name="email_otp_1" />
+          <input type="text" maxlength="1" name="email_otp_2" />
+          <input type="text" maxlength="1" name="email_otp_3" />
+          <input type="text" maxlength="1" name="email_otp_4" />
+          <input type="text" maxlength="1" name="email_otp_5" />
+          <input type="text" maxlength="1" name="email_otp_6" />
         </div>
       </div>
+      <input type="hidden" name="email_otp" id="emailOtpComplete" />
 
       <!-- Password -->
       <div class="form-group">
@@ -166,15 +176,41 @@
           type="password"
           id="password"
           placeholder="Enter password"
+          name="password"
           required
         />
+
+        <div
+          class="password-format"
+          style="color: gray; font-size: 12px; margin-top: 5px"
+        >
+          Must contain 1 uppercase, 1 lowercase, and 1 special character in
+          @,#,$,*,_
+        </div>
+
         <div class="error-message" id="passwordError">
           Must contain 1 uppercase, 1 lowercase, and 1 special character
         </div>
       </div>
 
-      <!-- Register button with href -->
-      <a href="success.html" class="register-btn" id="registerBtn">Register</a>
+      <!-- Confirm Password -->
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <input
+          type="password"
+          id="confirmPassword"
+          placeholder="Confirm password"
+          name="confirm_password"
+          required
+        />
+
+        <div class="error-message" id="confirmPasswordError">
+          Passwords do not match
+        </div>
+      </div>
+
+      <!-- Register button -->
+      <button class="register-btn" id="registerBtn">Register</button>
     </div>
 
     <script>
@@ -207,26 +243,71 @@
         });
       }
 
+      function combineOtpValues() {
+        const phoneInputs = document.querySelectorAll("#phoneOtp input");
+        const emailInputs = document.querySelectorAll("#emailOtp input");
+
+        const phoneOtp = Array.from(phoneInputs)
+          .map((input) => input.value)
+          .join("");
+        const emailOtp = Array.from(emailInputs)
+          .map((input) => input.value)
+          .join("");
+
+        document.getElementById("phoneOtpComplete").value = phoneOtp;
+        document.getElementById("emailOtpComplete").value = emailOtp;
+
+        return { phoneOtp, emailOtp };
+      }
+
       // Setup OTP boxes
       setupOtpInputs("phoneOtp");
       setupOtpInputs("emailOtp");
 
-      // Password validation
+      // Form validation
       const passwordInput = document.getElementById("password");
+      const confirmPasswordInput = document.getElementById("confirmPassword");
       const passwordError = document.getElementById("passwordError");
+      const confirmPasswordError = document.getElementById(
+        "confirmPasswordError"
+      );
       const registerBtn = document.getElementById("registerBtn");
 
       registerBtn.addEventListener("click", (e) => {
+        let isValid = true;
+
+        // Combine OTP values
+        combineOtpValues();
+
+        // Validate password
         const password = passwordInput.value;
-        const validPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{6,}$/;
+        const validPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$*_]).{6,}$/;
 
         if (!validPattern.test(password)) {
-          e.preventDefault();
           passwordError.style.display = "block";
           passwordInput.style.borderColor = "#d9534f";
+          isValid = false;
         } else {
           passwordError.style.display = "none";
           passwordInput.style.borderColor = "#ddd";
+        }
+
+        // Validate password confirmation
+        const confirmPassword = confirmPasswordInput.value;
+        if (password !== confirmPassword) {
+          confirmPasswordError.style.display = "block";
+          confirmPasswordInput.style.borderColor = "#d9534f";
+          isValid = false;
+        } else {
+          confirmPasswordError.style.display = "none";
+          confirmPasswordInput.style.borderColor = "#ddd";
+        }
+
+        // If valid, submit the form (in a real app, this would be an actual form submission)
+        if (isValid) {
+          window.location.href = "/login";
+        } else {
+          e.preventDefault();
         }
       });
     </script>
