@@ -186,87 +186,92 @@
       </div>
 
       <div class="registration-form">
-        <div class="name-fields">
-          <div class="form-group">
-            <label for="firstName">First Name</label>
-            <input
-              type="text"
-              id="firstName"
-              placeholder="Enter your first name"
-              name="first_name"
-              required
-            />
-            <div class="error-message" id="firstNameError">
-              No spaces or symbols allowed
+        <form action="/register" method="post">
+          {% csrf_tocken %}
+          <div class="name-fields">
+            <div class="form-group">
+              <label for="firstName">First Name</label>
+              <input
+                type="text"
+                id="firstName"
+                placeholder="Enter your first name"
+                name="first_name"
+                required
+              />
+              <div class="error-message" id="firstNameError">
+                No spaces or symbols allowed
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="lastName">Last Name</label>
+              <input
+                type="text"
+                id="lastName"
+                placeholder="Enter your last name"
+                name="last_name"
+                required
+              />
+              <div class="error-message" id="lastNameError">
+                No spaces or symbols allowed
+              </div>
             </div>
           </div>
 
           <div class="form-group">
-            <label for="lastName">Last Name</label>
+            <label for="username">Username</label>
             <input
               type="text"
-              id="lastName"
-              placeholder="Enter your last name"
-              name="last_name"
+              id="username"
+              placeholder="Enter your username"
+              name="username"
               required
             />
-            <div class="error-message" id="lastNameError">
-              No spaces or symbols allowed
+            <div class="username-format">
+              Allowed characters: A-Z, a-z, 0-9, _
+            </div>
+            <div class="error-message" id="usernameError">
+              Only letters, numbers, and underscores are allowed
             </div>
           </div>
-        </div>
 
-        <div class="form-group">
-          <label for="username">Username</label>
-          <input
-            type="text"
-            id="username"
-            placeholder="Enter your username"
-            name="username"
-            required
-          />
-          <div class="username-format">
-            Allowed characters: A-Z, a-z, 0-9, _
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input
+              type="email"
+              id="email"
+              placeholder="Enter your email address"
+              name="email"
+              required
+            />
+            <div class="error-message" id="emailError">
+              Please enter a valid email address
+            </div>
           </div>
-          <div class="error-message" id="usernameError">
-            Only letters, numbers, and underscores are allowed
-          </div>
-        </div>
 
-        <div class="form-group">
-          <label for="email">Email Address</label>
-          <input
-            type="email"
-            id="email"
-            placeholder="Enter your email address"
-            name="email"
-          />
-          <div class="error-message" id="emailError">
-            Please enter a valid email address
+          <div class="form-group">
+            <label for="phone"
+              >Phone Number <span class="optional">(optional)</span></label
+            >
+            <input type="text" id="phone" name="phone" placeholder="XXXX XX XXXX" />
+            <div class="phone-format">
+              Format: XXXX XX XXXX (e.g., 1234 56 7890)
+            </div>
+            <div class="error-message" id="phoneError">
+              Please use the format XXXX XX XXXX
+            </div>
           </div>
-        </div>
 
-        <div class="form-group">
-          <label for="phone"
-            >Phone Number <span class="optional">(optional)</span></label
-          >
-          <input type="text" id="phone" placeholder="XXXX XX XXXX" />
-          <div class="phone-format">
-            Format: XXXX XX XXXX (e.g., 1234 56 7890)
+          <div class="verification-button">
+            <!-- ✅ Make button submit the form -->
+            <button type="submit" class="verify-btn" id="verifyBtn">
+              Verify Email & Phone
+            </button>
+            <div class="success-message" id="verificationStatus">
+              Verification codes sent to your email and phone
+            </div>
           </div>
-          <div class="error-message" id="phoneError">
-            Please use the format XXXX XX XXXX
-          </div>
-        </div>
-
-        <div class="verification-button">
-          <button class="verify-btn" id="verifyBtn">
-            Verify Email & Phone
-          </button>
-          <div class="success-message" id="verificationStatus">
-            Verification codes sent to your email and phone
-          </div>
-        </div>
+        </form>
 
         <div class="login-link">
           Already have an account? <a href="#">Sign In</a>
@@ -281,7 +286,6 @@
         const usernameInput = document.getElementById("username");
         const emailInput = document.getElementById("email");
         const phoneInput = document.getElementById("phone");
-        const verifyBtn = document.getElementById("verifyBtn");
 
         // Validation patterns
         const namePattern = /^[a-zA-Z]+$/;
@@ -341,38 +345,6 @@
           } else {
             document.getElementById("phoneError").style.display = "none";
             this.style.borderColor = "#ddd";
-          }
-        });
-
-        // Verify button
-        verifyBtn.addEventListener("click", function () {
-          let isValid = true;
-
-          // Validate email
-          if (!emailPattern.test(emailInput.value)) {
-            document.getElementById("emailError").style.display = "block";
-            emailInput.style.borderColor = "#d9534f";
-            isValid = false;
-          }
-
-          // Validate phone (if provided)
-          if (phoneInput.value !== "" && !phonePattern.test(phoneInput.value)) {
-            document.getElementById("phoneError").style.display = "block";
-            phoneInput.style.borderColor = "#d9534f";
-            isValid = false;
-          }
-
-          if (isValid) {
-            this.classList.add("verified");
-            this.textContent = "Verification Sent";
-            document.getElementById("verificationStatus").style.display =
-              "block";
-
-            // Disable email and phone fields after verification
-            emailInput.disabled = true;
-            if (phoneInput.value !== "") {
-              phoneInput.disabled = true;
-            }
           }
         });
       });
