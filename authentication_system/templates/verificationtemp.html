@@ -127,8 +127,8 @@
       <h1>Verification Form</h1>
     </div>
     <div class="registration-form">
-      <form id="verificationForm">
-        
+      <form id="verificationForm" method="POST" action="/verification">
+        {% csrf_token %}
         <!-- Phone OTP -->
         <div class="form-group">
           <label for="phoneOtp">Enter Phone OTP</label>
@@ -234,11 +234,11 @@
       if (password.value === confirmPassword.value) {
         confirmMessage.style.display = "block";
         confirmMessage.style.color = "green";
-        confirmMessage.textContent = "Password matched ✅";
+        confirmMessage.textContent = "Password matched";
       } else {
         confirmMessage.style.display = "block";
         confirmMessage.style.color = "red";
-        confirmMessage.textContent = "Passwords do not match ❌";
+        confirmMessage.textContent = "Passwords do not match";
       }
     });
 
@@ -274,7 +274,7 @@
       if (password.value !== confirmPassword.value) {
         confirmMessage.style.display = "block";
         confirmMessage.style.color = "red";
-        confirmMessage.textContent = "Passwords do not match ❌";
+        confirmMessage.textContent = "Passwords do not match";
         valid = false;
       }
 
