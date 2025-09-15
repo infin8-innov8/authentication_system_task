@@ -1,315 +1,287 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Verification Page</title>
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      }
-
-      body {
-        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-        min-height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 20px;
-      }
-
-      .verification-container {
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-        width: 100%;
-        max-width: 500px;
-        padding: 25px;
-      }
-
-      .verification-header {
-        text-align: center;
-        margin-bottom: 20px;
-      }
-
-      .verification-header h1 {
-        font-size: 22px;
-        color: #2575fc;
-      }
-
-      .otp-section {
-        margin-bottom: 20px;
-      }
-
-      .otp-label {
-        font-size: 14px;
-        margin-bottom: 8px;
-        display: block;
-        color: #333;
-        font-weight: 500;
-      }
-
-      .otp-inputs {
-        display: flex;
-        gap: 10px;
-        justify-content: center;
-      }
-
-      .otp-inputs input {
-        width: 40px;
-        height: 45px;
-        text-align: center;
-        font-size: 18px;
-        border: 1px solid #ddd;
-        border-radius: 6px;
-        transition: 0.3s;
-      }
-
-      .otp-inputs input:focus {
-        border-color: #2575fc;
-        outline: none;
-        box-shadow: 0 0 0 2px rgba(37, 117, 252, 0.2);
-      }
-
-      .form-group {
-        margin-bottom: 20px;
-      }
-
-      .form-group label {
-        display: block;
-        margin-bottom: 6px;
-        font-weight: 500;
-        color: #333;
-      }
-
-      .form-group input {
-        width: 100%;
-        padding: 12px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        font-size: 14px;
-        transition: 0.3s;
-      }
-
-      .form-group input:focus {
-        border-color: #2575fc;
-        outline: none;
-        box-shadow: 0 0 0 2px rgba(37, 117, 252, 0.2);
-      }
-
-      .register-btn {
-        display: inline-block;
-        text-align: center;
-        width: 100%;
-        padding: 12px;
-        background: #2575fc;
-        color: white;
-        border-radius: 8px;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        text-decoration: none;
-        transition: 0.3s;
-        border: none;
-      }
-
-      .register-btn:hover {
-        background: #1c64e0;
-      }
-
-      .error-message {
-        color: #d9534f;
-        font-size: 12px;
-        margin-top: 4px;
-        display: none;
-      }
-
-      .success-message {
-        color: #4caf50;
-        font-size: 12px;
-        margin-top: 4px;
-        display: none;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="verification-container">
-      <div class="verification-header">
-        <h1>Verify Your Details</h1>
-      </div>
-
-      <!-- Phone OTP -->
-      <div class="otp-section">
-        <label class="otp-label">Enter Phone OTP</label>
-        <div class="otp-inputs" id="phoneOtp">
-          <input type="text" maxlength="1" name="phone_otp_1" />
-          <input type="text" maxlength="1" name="phone_otp_2" />
-          <input type="text" maxlength="1" name="phone_otp_3" />
-          <input type="text" maxlength="1" name="phone_otp_4" />
-          <input type="text" maxlength="1" name="phone_otp_5" />
-          <input type="text" maxlength="1" name="phone_otp_6" />
-        </div>
-      </div>
-      <input type="hidden" name="phone_otp" id="phoneOtpComplete" />
-
-      <!-- Email OTP -->
-      <div class="otp-section">
-        <label class="otp-label">Enter Email OTP</label>
-        <div class="otp-inputs" id="emailOtp">
-          <input type="text" maxlength="1" name="email_otp_1" />
-          <input type="text" maxlength="1" name="email_otp_2" />
-          <input type="text" maxlength="1" name="email_otp_3" />
-          <input type="text" maxlength="1" name="email_otp_4" />
-          <input type="text" maxlength="1" name="email_otp_5" />
-          <input type="text" maxlength="1" name="email_otp_6" />
-        </div>
-      </div>
-      <input type="hidden" name="email_otp" id="emailOtpComplete" />
-
-      <!-- Password -->
-      <div class="form-group">
-        <label for="password">Set Password</label>
-        <input
-          type="password"
-          id="password"
-          placeholder="Enter password"
-          name="password"
-          required
-        />
-
-        <div
-          class="password-format"
-          style="color: gray; font-size: 12px; margin-top: 5px"
-        >
-          Must contain 1 uppercase, 1 lowercase, and 1 special character in
-          @,#,$,*,_
-        </div>
-
-        <div class="error-message" id="passwordError">
-          Must contain 1 uppercase, 1 lowercase, and 1 special character
-        </div>
-      </div>
-
-      <!-- Confirm Password -->
-      <div class="form-group">
-        <label for="confirmPassword">Confirm Password</label>
-        <input
-          type="password"
-          id="confirmPassword"
-          placeholder="Confirm password"
-          name="confirm_password"
-          required
-        />
-
-        <div class="error-message" id="confirmPasswordError">
-          Passwords do not match
-        </div>
-      </div>
-
-      <!-- Register button -->
-      <button class="register-btn" id="registerBtn">Register</button>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verification Form</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .registration-container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 480px;
+      overflow: hidden;
+    }
+    .registration-header {
+      background: #2575fc;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    .registration-header h1 {
+      font-weight: 600;
+      font-size: 22px;
+    }
+    .registration-form {
+      padding: 25px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+      text-align: center;
+      position: relative;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500;
+      color: #333;
+      font-size: 14px;
+      text-align: left;
+    }
+    .otp-boxes {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .otp-boxes input {
+      width: 40px;
+      height: 40px;
+      text-align: center;
+      font-size: 18px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .otp-boxes input:focus {
+      outline: none;
+      border-color: #2575fc;
+      box-shadow: 0 0 0 2px rgba(37, 117, 252, 0.2);
+    }
+    .hint {
+      font-size: 12px;
+      color: #777;
+      margin-top: 4px;
+      display: block;
+      text-align: left;
+    }
+    .form-group input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    .form-group input:focus {
+      outline: none;
+      border-color: #2575fc;
+      box-shadow: 0 0 0 2px rgba(37, 117, 252, 0.2);
+    }
+    .error-message {
+      color: #d9534f;
+      font-size: 12px;
+      display: none;
+      margin-top: 4px;
+      text-align: left;
+    }
+    .match-message {
+      font-size: 13px;
+      margin-top: 4px;
+      text-align: left;
+      display: none;
+    }
+    .register-button {
+      width: 100%;
+      padding: 14px;
+      background: #2575fc;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .register-button:hover {
+      background: #2575fc;
+    }
+  </style>
+</head>
+<body>
+  <div class="registration-container">
+    <div class="registration-header">
+      <h1>Verification Form</h1>
     </div>
+    <div class="registration-form">
+      <form id="verificationForm">
+        
+        <!-- Phone OTP -->
+        <div class="form-group">
+          <label for="phoneOtp">Enter Phone OTP</label>
+          <div class="otp-boxes" id="phoneOtp">
+            <input type="text" maxlength="1" required>
+            <input type="text" maxlength="1" required>
+            <input type="text" maxlength="1" required>
+            <input type="text" maxlength="1" required>
+            <input type="text" maxlength="1" required>
+            <input type="text" maxlength="1" required>
+          </div>
+          <div class="error-message" id="phoneError">Enter a valid 6-digit OTP</div>
+        </div>
 
-    <script>
-      function setupOtpInputs(containerId) {
-        const inputs = document.querySelectorAll(`#${containerId} input`);
+        <!-- Email OTP -->
+        <div class="form-group">
+          <label for="emailOtp">Enter Email OTP</label>
+          <div class="otp-boxes" id="emailOtp">
+            <input type="text" maxlength="1" required>
+            <input type="text" maxlength="1" required>
+            <input type="text" maxlength="1" required>
+            <input type="text" maxlength="1" required>
+            <input type="text" maxlength="1" required>
+            <input type="text" maxlength="1" required>
+          </div>
+          <div class="error-message" id="emailError">Enter a valid 6-digit OTP</div>
+        </div>
 
-        inputs.forEach((input, index) => {
-          input.addEventListener("input", (e) => {
-            if (input.value.length === 1 && index < inputs.length - 1) {
-              inputs[index + 1].focus();
-            }
-          });
+        <!-- Password -->
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" required />
+          <span class="hint">(Min 5 chars, 1 capital, 1 special)</span>
+          <div class="error-message" id="passError">
+            Invalid password format.
+          </div>
+        </div>
 
-          input.addEventListener("keydown", (e) => {
-            if (e.key === "Backspace" && !input.value && index > 0) {
-              inputs[index - 1].focus();
-            }
-          });
+        <!-- Confirm Password -->
+        <div class="form-group">
+          <label for="confirmPassword">Confirm Password</label>
+          <input type="password" id="confirmPassword" required />
+          <div class="match-message" id="confirmMessage"></div>
+        </div>
 
-          input.addEventListener("paste", (e) => {
-            const pasteData = e.clipboardData.getData("text").trim();
-            if (/^\d{6}$/.test(pasteData)) {
-              pasteData.split("").forEach((char, i) => {
-                if (inputs[i]) inputs[i].value = char;
-              });
-              inputs[inputs.length - 1].focus();
-              e.preventDefault();
-            }
-          });
+        <button type="submit" class="register-button">Register</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function getOtpValue(containerId) {
+      const inputs = document.querySelectorAll(`#${containerId} input`);
+      return Array.from(inputs).map(inp => inp.value).join("");
+    }
+
+    function setupOtp(containerId) {
+      const inputs = document.querySelectorAll(`#${containerId} input`);
+      
+      inputs.forEach((input, index) => {
+        input.addEventListener("input", () => {
+          if (input.value.length === 1 && index < inputs.length - 1) {
+            inputs[index + 1].focus();
+          }
         });
-      }
-
-      function combineOtpValues() {
-        const phoneInputs = document.querySelectorAll("#phoneOtp input");
-        const emailInputs = document.querySelectorAll("#emailOtp input");
-
-        const phoneOtp = Array.from(phoneInputs)
-          .map((input) => input.value)
-          .join("");
-        const emailOtp = Array.from(emailInputs)
-          .map((input) => input.value)
-          .join("");
-
-        document.getElementById("phoneOtpComplete").value = phoneOtp;
-        document.getElementById("emailOtpComplete").value = emailOtp;
-
-        return { phoneOtp, emailOtp };
-      }
-
-      // Setup OTP boxes
-      setupOtpInputs("phoneOtp");
-      setupOtpInputs("emailOtp");
-
-      // Form validation
-      const passwordInput = document.getElementById("password");
-      const confirmPasswordInput = document.getElementById("confirmPassword");
-      const passwordError = document.getElementById("passwordError");
-      const confirmPasswordError = document.getElementById(
-        "confirmPasswordError"
-      );
-      const registerBtn = document.getElementById("registerBtn");
-
-      registerBtn.addEventListener("click", (e) => {
-        let isValid = true;
-
-        // Combine OTP values
-        combineOtpValues();
-
-        // Validate password
-        const password = passwordInput.value;
-        const validPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$*_]).{6,}$/;
-
-        if (!validPattern.test(password)) {
-          passwordError.style.display = "block";
-          passwordInput.style.borderColor = "#d9534f";
-          isValid = false;
-        } else {
-          passwordError.style.display = "none";
-          passwordInput.style.borderColor = "#ddd";
-        }
-
-        // Validate password confirmation
-        const confirmPassword = confirmPasswordInput.value;
-        if (password !== confirmPassword) {
-          confirmPasswordError.style.display = "block";
-          confirmPasswordInput.style.borderColor = "#d9534f";
-          isValid = false;
-        } else {
-          confirmPasswordError.style.display = "none";
-          confirmPasswordInput.style.borderColor = "#ddd";
-        }
-
-        // If valid, submit the form (in a real app, this would be an actual form submission)
-        if (isValid) {
-          window.location.href = "/login";
-        } else {
+        input.addEventListener("keydown", (e) => {
+          if (e.key === "Backspace" && input.value === "" && index > 0) {
+            inputs[index - 1].focus();
+          }
+        });
+        input.addEventListener("paste", (e) => {
           e.preventDefault();
-        }
+          const pasteData = (e.clipboardData || window.clipboardData).getData("text").trim();
+          if (/^\d+$/.test(pasteData)) {
+            pasteData.split("").forEach((char, i) => {
+              if (i < inputs.length) {
+                inputs[i].value = char;
+              }
+            });
+            if (pasteData.length >= inputs.length) {
+              inputs[inputs.length - 1].focus();
+            }
+          }
+        });
       });
-    </script>
-  </body>
+    }
+
+    // Apply to both OTP fields
+    setupOtp("phoneOtp");
+    setupOtp("emailOtp");
+
+    const form = document.getElementById("verificationForm");
+    const password = document.getElementById("password");
+    const confirmPassword = document.getElementById("confirmPassword");
+    const confirmMessage = document.getElementById("confirmMessage");
+
+    // Real-time confirm password check
+    confirmPassword.addEventListener("input", () => {
+      if (confirmPassword.value === "") {
+        confirmMessage.style.display = "none";
+        return;
+      }
+      if (password.value === confirmPassword.value) {
+        confirmMessage.style.display = "block";
+        confirmMessage.style.color = "green";
+        confirmMessage.textContent = "Password matched ✅";
+      } else {
+        confirmMessage.style.display = "block";
+        confirmMessage.style.color = "red";
+        confirmMessage.textContent = "Passwords do not match ❌";
+      }
+    });
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      let valid = true;
+
+      const phoneOtpVal = getOtpValue("phoneOtp");
+      const emailOtpVal = getOtpValue("emailOtp");
+
+      if (!/^\d{6}$/.test(phoneOtpVal)) {
+        document.getElementById("phoneError").style.display = "block";
+        valid = false;
+      } else {
+        document.getElementById("phoneError").style.display = "none";
+      }
+
+      if (!/^\d{6}$/.test(emailOtpVal)) {
+        document.getElementById("emailError").style.display = "block";
+        valid = false;
+      } else {
+        document.getElementById("emailError").style.display = "none";
+      }
+
+      const passPattern = /^(?=.*[A-Z])(?=.*[\W_]).{5,}$/;
+      if (!passPattern.test(password.value)) {
+        document.getElementById("passError").style.display = "block";
+        valid = false;
+      } else {
+        document.getElementById("passError").style.display = "none";
+      }
+
+      if (password.value !== confirmPassword.value) {
+        confirmMessage.style.display = "block";
+        confirmMessage.style.color = "red";
+        confirmMessage.textContent = "Passwords do not match ❌";
+        valid = false;
+      }
+
+      if (valid) {
+        alert("Registration Successful!");
+      }
+    });
+  </script>
+</body>
 </html>
