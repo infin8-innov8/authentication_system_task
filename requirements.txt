@@ -8,3 +8,4 @@ python-decouple==3.8
 python-dotenv==1.1.1
 python-ldap==3.4.4
 sqlparse==0.5.3
+pymysql==1.1.2
