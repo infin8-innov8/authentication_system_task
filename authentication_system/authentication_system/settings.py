@@ -76,8 +76,8 @@ DATABASES = {
         'NAME': 'accounts_db',
         'USER' : 'accountant',
         'PASSWORD' : 'activ8*o', 
-        'HOST' : '',
-        'PORT' : '',
+        'HOST' : 'localhost',
+        'PORT' : '3306',
     }
 }
 
@@ -122,6 +122,8 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# LDAP Confugurations
 
 AUTHENTICATION_BACKEND = [
     'django_auth_ldap.backend.LDAPBackend',
