@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Organization Registration</title>
+    <title>Registration</title>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -186,10 +186,12 @@
       </div>
 
       <div class="registration-form">
-        <form action="/register" method="post">
-          {% csrf_tocken %}
+        <form method="post" action="/register/">
+           {% csrf_token %}
           <div class="name-fields">
             <div class="form-group">
+           
+
               <label for="firstName">First Name</label>
               <input
                 type="text"
@@ -274,7 +276,7 @@
         </form>
 
         <div class="login-link">
-          Already have an account? <a href="#">Sign In</a>
+          Already have an account? <a href="/login">Sign In</a>
         </div>
       </div>
     </div>
