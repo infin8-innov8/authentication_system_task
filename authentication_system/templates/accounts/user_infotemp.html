@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>User Profile Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+      .profile-container {
+        max-width: 700px;
+        margin: 50px auto;
+        background: #f8f9fa;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+      }
+      .profile-header {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 28px;
+        font-weight: bold;
+        color: #2575fc;
+      }
+      .btn-verify {
+        margin-left: 10px;
+        display: none;
+      }
+      .verify-visible .btn-verify {
+        display: inline-block;
+      }
+      .validation-message {
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+      }
+      .valid-feedback, .invalid-feedback {
+        display: block;
+      }
+      .input-group-text {
+        background-color: #e9ecef;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+          <i class="fas fa-user-circle me-2"></i>Profile Manager
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+                data-bs-target="#navbarSupportedContent" 
+                aria-controls="navbarSupportedContent" aria-expanded="false" 
+                aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <!-- Home -->
+            <li class="nav-item">
+              <a class="nav-link" aria-current="page" href="#">
+                <i class="fas fa-home me-1"></i>Home
+              </a>
+            </li>
+            
+            <!-- Profile -->
+            <li class="nav-item">
+              <a class="nav-link active" href="#">
+                <i class="fas fa-user me-1"></i>My Profile
+              </a>
+            </li>
+            
+            <!-- Profiles Dropdown -->
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" 
+                 data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-users me-1"></i>Profiles
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#"><i class="fas fa-user me-1"></i>My Profile</a></li>
+                <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-1"></i>Settings</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-1"></i>Logout</a></li>
+              </ul>
+            </li>
+          </ul>
+
+          <!-- Search -->
+          <form class="d-flex" role="search">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
+            <button class="btn btn-outline-success" type="submit">
+              <i class="fas fa-search"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Profile Management -->
+    <div class="profile-container">
+      <div class="profile-header">
+        <i class="fas fa-user-cog me-2"></i>Profile Management
+      </div>
+      <form id="profileForm" novalidate>
+        <!-- Name Fields (Split into First and Last Name) -->
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label">First Name</label>
+            <input type="text" class="form-control" id="firstName" value="John" disabled required>
+            <div class="valid-feedback">Looks good!</div>
+            <div class="invalid-feedback">Please provide a first name.</div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Last Name</label>
+            <input type="text" class="form-control" id="lastName" value="Doe" disabled required>
+            <div class="valid-feedback">Looks good!</div>
+            <div class="invalid-feedback">Please provide a last name.</div>
+          </div>
+        </div>
+        
+        <!-- Email Field with Validation -->
+        <div class="mb-3 d-flex align-items-center">
+          <div class="flex-grow-1">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" value="johndoe@example.com" disabled 
+                   pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required>
+            <div class="valid-feedback">Valid email format!</div>
+            <div class="invalid-feedback">Please provide a valid email (format: user@domain.com).</div>
+          </div>
+          <button type="button" class="btn btn-outline-primary btn-verify" id="verifyEmailBtn">
+            <i class="fas fa-envelope me-1"></i>Verify Email
+          </button>
+        </div>
+        
+        <!-- Phone Field with Format Validation -->
+        <div class="mb-3 d-flex align-items-center">
+          <div class="flex-grow-1">
+            <label class="form-label">Phone Number</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="fas fa-phone"></i></span>
+              <input type="tel" class="form-control" id="phone" value="123-456-7890" disabled 
+                     pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required>
+            </div>
+            <div class="validation-message text-muted">Format: XXX-XXX-XXXX</div>
+            <div class="valid-feedback">Valid phone format!</div>
+            <div class="invalid-feedback">Please use the format: XXX-XXX-XXXX</div>
+          </div>
+          <button type="button" class="btn btn-outline-primary btn-verify" id="verifyPhoneBtn">
+            <i class="fas fa-mobile-alt me-1"></i>Verify Phone
+          </button>
+        </div>
+        
+        <!-- Username Field with Underscore Validation -->
+        <div class="mb-3">
+          <label class="form-label">Username</label>
+          <div class="input-group">
+            <span class="input-group-text">@</span>
+            <input type="text" class="form-control" id="username" value="john_doe" disabled 
+                   pattern="[a-zA-Z0-9_]+" required>
+          </div>
+          <div class="validation-message text-muted">Must include at least one underscore (_)</div>
+          <div class="valid-feedback">Valid username!</div>
+          <div class="invalid-feedback">Username can only contain letters, numbers, and must include at least one underscore (_).</div>
+        </div>
+        
+        <!-- Buttons -->
+        <div class="d-flex justify-content-between mt-4">
+          <button type="button" id="editBtn" class="btn btn-warning">
+            <i class="fas fa-edit me-1"></i>Edit
+          </button>
+          <button type="submit" id="saveBtn" class="btn btn-success" disabled>
+            <i class="fas fa-save me-1"></i>Save
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <script>
+      const editBtn = document.getElementById("editBtn");
+      const saveBtn = document.getElementById("saveBtn");
+      const verifyEmailBtn = document.getElementById("verifyEmailBtn");
+      const verifyPhoneBtn = document.getElementById("verifyPhoneBtn");
+      const inputs = document.querySelectorAll("#profileForm input");
+      const form = document.getElementById("profileForm");
+
+      // Enable editing
+      editBtn.addEventListener("click", () => {
+        inputs.forEach(input => input.disabled = false);
+        saveBtn.disabled = false;
+        
+        // Show verify buttons when in edit mode
+        form.classList.add("verify-visible");
+      });
+
+      // Form validation and submission
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        
+        if (!form.checkValidity()) {
+          e.stopPropagation();
+          form.classList.add('was-validated');
+          return;
+        }
+        
+        // If form is valid, show success message
+        alert("Profile updated successfully!");
+        inputs.forEach(input => input.disabled = true);
+        saveBtn.disabled = true;
+        form.classList.remove("verify-visible");
+        form.classList.remove('was-validated');
+      });
+
+      // Add event listeners for verify buttons
+      verifyEmailBtn.addEventListener("click", () => {
+        alert("Email verification sent! Please check your inbox.");
+      });
+
+      verifyPhoneBtn.addEventListener("click", () => {
+        alert("SMS verification code sent to your phone!");
+      });
+
+      // Live validation for username to check for underscore
+      document.getElementById("username").addEventListener("input", function() {
+        if (this.value.includes('_')) {
+          this.setCustomValidity("");
+        } else {
+          this.setCustomValidity("Username must contain at least one underscore (_)");
+        }
+      });
+
+      // Live validation for email format
+      document.getElementById("email").addEventListener("input", function() {
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (emailPattern.test(this.value)) {
+          this.setCustomValidity("");
+        } else {
+          this.setCustomValidity("Please enter a valid email address");
+        }
+      });
+
+      // Auto-format phone number as XXX-XXX-XXXX
+      document.getElementById("phone").addEventListener("input", function(e) {
+        // Remove all non-digit characters
+        let phoneNumber = e.target.value.replace(/\D/g, '');
+        
+        // Format the phone number as XXX-XXX-XXXX
+        if (phoneNumber.length > 6) {
+          phoneNumber = phoneNumber.substring(0, 6) + '-' + phoneNumber.substring(6);
+        }
+        if (phoneNumber.length > 3) {
+          phoneNumber = phoneNumber.substring(0, 3) + '-' + phoneNumber.substring(3);
+        }
+        
+        // Update the input value
+        e.target.value = phoneNumber.substring(0, 12); // Limit to 12 characters (XXX-XXX-XXXX)
+      });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
