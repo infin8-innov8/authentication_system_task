@@ -9,10 +9,6 @@ class UserAccount(AbstractUser) :
     def __str__(self):
         return self.email
     
-    class Meta : 
-        db_table = "User Accounts"  
-        verbose_name = "User Account"
-        verbose_name_plural = "User Account"
 
     def save(self, *args, **kwargs) : 
         if self.first_name : 

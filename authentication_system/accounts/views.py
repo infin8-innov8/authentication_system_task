@@ -11,32 +11,19 @@ def registration_page(request) :
         last_name = request.POST.get("last_name")
         email = request.POST.get("email")
         phone_number = request.POST.get("phone_number")
-        email_otp = request.POST.get("email_otp")
-        phone_otp = request.POST.get("phone_otp")
-        password = request.POST.get("password")
-        conf_password = request.POST.get("confirm_password")
-        # print(first_name, last_name, username, email, phone_number, email_otp, phone_otp, sep="\n")
-        sent_email_otp = '111111'
-        sent_phone_otp = '222222'
-
-        if password != conf_password : 
-            return render(request, 'accounts/registrationtemp.html', {'error' : 'Password do not match'})
-
-        if email_otp != sent_email_otp or phone_otp != sent_phone_otp : 
-            return render(request, 'accounts/registrationtemp.html', {'error' : 'invalid OTP varification'})
+        print(first_name, last_name, username, email, phone_number, sep="\n")
         
         user = UserAccount(
             username = username,
             first_name = first_name,
             last_name = last_name,
             email = email,
-            password = make_password(password),
             phone_number = phone_number, 
             date_joined = timezone.now()
         )
 
         user.save()
-        return redirect('/login/')
+        return redirect('/register/')
     return render(request, 'accounts/registrationtemp.html')
 
 def verification_page(request) : 
