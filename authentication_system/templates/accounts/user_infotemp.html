@@ -1,262 +1,484 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>User Profile Management</title>
+    <title>User Profile</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
-      .profile-container {
-        max-width: 700px;
-        margin: 50px auto;
-        background: #f8f9fa;
-        padding: 25px;
-        border-radius: 15px;
-        box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
-      }
-      .profile-header {
-        text-align: center;
-        margin-bottom: 20px;
-        font-size: 28px;
-        font-weight: bold;
-        color: #2575fc;
-      }
-      .btn-verify {
-        margin-left: 10px;
-        display: none;
-      }
-      .verify-visible .btn-verify {
-        display: inline-block;
-      }
-      .validation-message {
-        font-size: 0.875rem;
-        margin-top: 0.25rem;
-      }
-      .valid-feedback, .invalid-feedback {
-        display: block;
-      }
-      .input-group-text {
-        background-color: #e9ecef;
-      }
+        :root {
+            --google-blue: #1a73e8;
+            --google-gray: #f8f9fa;
+            --google-dark-gray: #5f6368;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Roboto', 'Segoe UI', sans-serif;
+        }
+        
+        .profile-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            padding: 30px;
+            transition: all 0.3s ease;
+        }
+        
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: var(--google-blue);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            font-weight: bold;
+            margin-right: 20px;
+        }
+        
+        .profile-info h2 {
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: #202124;
+        }
+        
+        .profile-email {
+            color: var(--google-dark-gray);
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #f1f3f4;
+        }
+        
+        .info-label {
+            color: var(--google-dark-gray);
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            font-weight: 500;
+            color: #202124;
+            font-size: 16px;
+        }
+        
+        .edit-icon {
+            color: var(--google-blue);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background-color 0.2s;
+        }
+        
+        .edit-icon:hover {
+            background-color: rgba(26, 115, 232, 0.1);
+        }
+        
+        .verified-badge {
+            color: #1e8e3e;
+            font-size: 14px;
+            margin-left: 5px;
+        }
+        
+        .form-edit-mode {
+            display: none;
+        }
+        
+        .help-text {
+            font-size: 12px;
+            color: var(--google-dark-gray);
+            margin-top: 5px;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #4caf50;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 4px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            display: none;
+            z-index: 1000;
+        }
+        
+        .email-edit-container {
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+        
+        @media (max-width: 768px) {
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .profile-avatar {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            
+            .email-edit-container {
+                position: static;
+                margin-top: 10px;
+            }
+        }
     </style>
-  </head>
-  <body>
+</head>
+<body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="#">
-          <i class="fas fa-user-circle me-2"></i>Profile Manager
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
-                data-bs-target="#navbarSupportedContent" 
-                aria-controls="navbarSupportedContent" aria-expanded="false" 
-                aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <!-- Home -->
-            <li class="nav-item">
-              <a class="nav-link" aria-current="page" href="#">
-                <i class="fas fa-home me-1"></i>Home
-              </a>
-            </li>
-            
-            <!-- Profile -->
-            <li class="nav-item">
-              <a class="nav-link active" href="#">
-                <i class="fas fa-user me-1"></i>My Profile
-              </a>
-            </li>
-            
-            <!-- Profiles Dropdown -->
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" role="button" 
-                 data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="fas fa-users me-1"></i>Profiles
-              </a>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#"><i class="fas fa-user me-1"></i>My Profile</a></li>
-                <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-1"></i>Settings</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-1"></i>Logout</a></li>
-              </ul>
-            </li>
-          </ul>
-
-          <!-- Search -->
-          <form class="d-flex" role="search">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
-            <button class="btn btn-outline-success" type="submit">
-              <i class="fas fa-search"></i>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-person-circle me-2"></i>Your Info
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                <span class="navbar-toggler-icon"></span>
             </button>
-          </form>
+
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Dashboard</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            Profiles
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">My Profile</a></li>
+                            <li><a class="dropdown-item" href="#">Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <div class="d-flex align-items-center">
+                    <span class="me-3">Hello, <strong>john_doe</strong></span>
+                    <form class="d-flex">
+                        <input class="form-control me-2" type="search" placeholder="Search">
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
+                </div>
+            </div>
         </div>
-      </div>
     </nav>
 
-    <!-- Profile Management -->
-    <div class="profile-container">
-      <div class="profile-header">
-        <i class="fas fa-user-cog me-2"></i>Profile Management
-      </div>
-      <form id="profileForm" novalidate>
-        <!-- Name Fields (Split into First and Last Name) -->
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <label class="form-label">First Name</label>
-            <input type="text" class="form-control" id="firstName" value="John" disabled required>
-            <div class="valid-feedback">Looks good!</div>
-            <div class="invalid-feedback">Please provide a first name.</div>
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">Last Name</label>
-            <input type="text" class="form-control" id="lastName" value="Doe" disabled required>
-            <div class="valid-feedback">Looks good!</div>
-            <div class="invalid-feedback">Please provide a last name.</div>
-          </div>
-        </div>
-        
-        <!-- Email Field with Validation -->
-        <div class="mb-3 d-flex align-items-center">
-          <div class="flex-grow-1">
-            <label class="form-label">Email</label>
-            <input type="email" class="form-control" id="email" value="johndoe@example.com" disabled 
-                   pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required>
-            <div class="valid-feedback">Valid email format!</div>
-            <div class="invalid-feedback">Please provide a valid email (format: user@domain.com).</div>
-          </div>
-          <button type="button" class="btn btn-outline-primary btn-verify" id="verifyEmailBtn">
-            <i class="fas fa-envelope me-1"></i>Verify Email
-          </button>
-        </div>
-        
-        <!-- Phone Field with Format Validation -->
-        <div class="mb-3 d-flex align-items-center">
-          <div class="flex-grow-1">
-            <label class="form-label">Phone Number</label>
-            <div class="input-group">
-              <span class="input-group-text"><i class="fas fa-phone"></i></span>
-              <input type="tel" class="form-control" id="phone" value="123-456-7890" disabled 
-                     pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required>
+    <!-- Main Content -->
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="profile-card">
+                    <div class="profile-header">
+                        <div class="profile-avatar" id="avatarInitials">JD</div>
+                        <div class="profile-info">
+                            <h2 id="displayName">John Doe</h2>
+                            <div class="profile-email" id="emailDisplay">
+                                johndoe@example.com
+                                <span class="verified-badge"><i class="bi bi-patch-check-fill"></i> Verified</span>
+                            </div>
+                        </div>
+                        <div class="email-edit-container">
+                            <i class="bi bi-pencil edit-icon" onclick="toggleEditMode('headerEmail')"></i>
+                        </div>
+                    </div>
+
+                    <!-- Header Email Edit Form -->
+                    <div class="form-edit-mode" id="headerEmailEditForm">
+                        <div class="mb-3">
+                            <label for="headerEmailInput" class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="headerEmailInput" value="johndoe@example.com">
+                            <div class="help-text">Enter a valid email address</div>
+                        </div>
+                        <div class="d-flex justify-content-end gap-2">
+                            <button class="btn btn-secondary" onclick="cancelEdit('headerEmail')">Cancel</button>
+                            <button class="btn btn-primary" onclick="saveHeaderEmail()">Save</button>
+                        </div>
+                        <hr>
+                    </div>
+
+                    <!-- Personal Information Section -->
+                    <h5 class="mb-4">Personal Information</h5>
+                    
+                    <!-- Username Field -->
+                    <div class="info-item">
+                        <div>
+                            <div class="info-label">USERNAME</div>
+                            <div class="info-value" id="usernameDisplay">john_doe</div>
+                        </div>
+                        <i class="bi bi-pencil edit-icon" onclick="toggleEditMode('username')"></i>
+                    </div>
+                    
+                    <!-- Username Edit Form -->
+                    <div class="form-edit-mode" id="usernameEditForm">
+                        <div class="mb-3">
+                            <label for="usernameInput" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="usernameInput" value="john_doe">
+                            <div class="help-text">Must be 3-20 characters, letters, numbers, and underscores only</div>
+                        </div>
+                        <div class="d-flex justify-content-end gap-2">
+                            <button class="btn btn-secondary" onclick="cancelEdit('username')">Cancel</button>
+                            <button class="btn btn-primary" onclick="saveUsername()">Save</button>
+                        </div>
+                        <hr>
+                    </div>
+                    
+                    <!-- Name Field -->
+                    <div class="info-item">
+                        <div>
+                            <div class="info-label">FULL NAME</div>
+                            <div class="info-value" id="nameDisplay">John Doe</div>
+                        </div>
+                        <i class="bi bi-pencil edit-icon" onclick="toggleEditMode('name')"></i>
+                    </div>
+                    
+                    <!-- Name Edit Form -->
+                    <div class="form-edit-mode" id="nameEditForm">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="firstName" class="form-label">First Name</label>
+                                <input type="text" class="form-control" id="firstName" value="John">
+                                <div class="help-text">Required field</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="lastName" class="form-label">Last Name</label>
+                                <input type="text" class="form-control" id="lastName" value="Doe">
+                                <div class="help-text">Required field</div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-end gap-2">
+                            <button class="btn btn-secondary" onclick="cancelEdit('name')">Cancel</button>
+                            <button class="btn btn-primary" onclick="saveName()">Save</button>
+                        </div>
+                        <hr>
+                    </div>
+
+                    <!-- Phone Field -->
+                    <div class="info-item">
+                        <div>
+                            <div class="info-label">PHONE</div>
+                            <div class="info-value">
+                                (555) 123-4567
+                                <span class="verified-badge"><i class="bi bi-patch-check-fill"></i> Verified</span>
+                            </div>
+                        </div>
+                        <i class="bi bi-pencil edit-icon" onclick="toggleEditMode('phone')"></i>
+                    </div>
+                    
+                    <!-- Phone Edit Form -->
+                    <div class="form-edit-mode" id="phoneEditForm">
+                        <div class="mb-3">
+                            <label for="phoneInput" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="phoneInput" value="5551234567">
+                            <div class="help-text">Enter a valid phone number</div>
+                        </div>
+                        <div class="d-flex justify-content-end gap-2">
+                            <button class="btn btn-secondary" onclick="cancelEdit('phone')">Cancel</button>
+                            <button class="btn btn-primary" onclick="savePhone()">Save</button>
+                        </div>
+                        <hr>
+                    </div>
+                </div>
             </div>
-            <div class="validation-message text-muted">Format: XXX-XXX-XXXX</div>
-            <div class="valid-feedback">Valid phone format!</div>
-            <div class="invalid-feedback">Please use the format: XXX-XXX-XXXX</div>
-          </div>
-          <button type="button" class="btn btn-outline-primary btn-verify" id="verifyPhoneBtn">
-            <i class="fas fa-mobile-alt me-1"></i>Verify Phone
-          </button>
         </div>
-        
-        <!-- Username Field with Underscore Validation -->
-        <div class="mb-3">
-          <label class="form-label">Username</label>
-          <div class="input-group">
-            <span class="input-group-text">@</span>
-            <input type="text" class="form-control" id="username" value="john_doe" disabled 
-                   pattern="[a-zA-Z0-9_]+" required>
-          </div>
-          <div class="validation-message text-muted">Must include at least one underscore (_)</div>
-          <div class="valid-feedback">Valid username!</div>
-          <div class="invalid-feedback">Username can only contain letters, numbers, and must include at least one underscore (_).</div>
-        </div>
-        
-        <!-- Buttons -->
-        <div class="d-flex justify-content-between mt-4">
-          <button type="button" id="editBtn" class="btn btn-warning">
-            <i class="fas fa-edit me-1"></i>Edit
-          </button>
-          <button type="submit" id="saveBtn" class="btn btn-success" disabled>
-            <i class="fas fa-save me-1"></i>Save
-          </button>
-        </div>
-      </form>
     </div>
 
-    <script>
-      const editBtn = document.getElementById("editBtn");
-      const saveBtn = document.getElementById("saveBtn");
-      const verifyEmailBtn = document.getElementById("verifyEmailBtn");
-      const verifyPhoneBtn = document.getElementById("verifyPhoneBtn");
-      const inputs = document.querySelectorAll("#profileForm input");
-      const form = document.getElementById("profileForm");
-
-      // Enable editing
-      editBtn.addEventListener("click", () => {
-        inputs.forEach(input => input.disabled = false);
-        saveBtn.disabled = false;
-        
-        // Show verify buttons when in edit mode
-        form.classList.add("verify-visible");
-      });
-
-      // Form validation and submission
-      form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        
-        if (!form.checkValidity()) {
-          e.stopPropagation();
-          form.classList.add('was-validated');
-          return;
-        }
-        
-        // If form is valid, show success message
-        alert("Profile updated successfully!");
-        inputs.forEach(input => input.disabled = true);
-        saveBtn.disabled = true;
-        form.classList.remove("verify-visible");
-        form.classList.remove('was-validated');
-      });
-
-      // Add event listeners for verify buttons
-      verifyEmailBtn.addEventListener("click", () => {
-        alert("Email verification sent! Please check your inbox.");
-      });
-
-      verifyPhoneBtn.addEventListener("click", () => {
-        alert("SMS verification code sent to your phone!");
-      });
-
-      // Live validation for username to check for underscore
-      document.getElementById("username").addEventListener("input", function() {
-        if (this.value.includes('_')) {
-          this.setCustomValidity("");
-        } else {
-          this.setCustomValidity("Username must contain at least one underscore (_)");
-        }
-      });
-
-      // Live validation for email format
-      document.getElementById("email").addEventListener("input", function() {
-        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-        if (emailPattern.test(this.value)) {
-          this.setCustomValidity("");
-        } else {
-          this.setCustomValidity("Please enter a valid email address");
-        }
-      });
-
-      // Auto-format phone number as XXX-XXX-XXXX
-      document.getElementById("phone").addEventListener("input", function(e) {
-        // Remove all non-digit characters
-        let phoneNumber = e.target.value.replace(/\D/g, '');
-        
-        // Format the phone number as XXX-XXX-XXXX
-        if (phoneNumber.length > 6) {
-          phoneNumber = phoneNumber.substring(0, 6) + '-' + phoneNumber.substring(6);
-        }
-        if (phoneNumber.length > 3) {
-          phoneNumber = phoneNumber.substring(0, 3) + '-' + phoneNumber.substring(3);
-        }
-        
-        // Update the input value
-        e.target.value = phoneNumber.substring(0, 12); // Limit to 12 characters (XXX-XXX-XXXX)
-      });
-    </script>
+    <!-- Success Notification -->
+    <div class="notification" id="successNotification">
+        <i class="bi bi-check-circle-fill me-2"></i> Your changes have been saved successfully!
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-  </body>
+    
+    <script>
+        // Store original values for cancel operation
+        let originalValues = {};
+        
+        // Toggle between view and edit modes
+        function toggleEditMode(field) {
+            // Hide all edit forms first
+            document.querySelectorAll('.form-edit-mode').forEach(form => {
+                form.style.display = 'none';
+            });
+            
+            // Show the selected edit form
+            const editForm = document.getElementById(`${field}EditForm`);
+            if (editForm) {
+                editForm.style.display = 'block';
+                
+                // Store original values
+                if (field === 'name') {
+                    originalValues.firstName = document.getElementById('firstName').value;
+                    originalValues.lastName = document.getElementById('lastName').value;
+                } else if (field === 'headerEmail') {
+                    originalValues.headerEmail = document.getElementById('headerEmailInput').value;
+                } else {
+                    originalValues[field] = document.getElementById(`${field}Input`).value;
+                }
+            }
+        }
+        
+        // Cancel editing
+        function cancelEdit(field) {
+            // Hide the edit form
+            document.getElementById(`${field}EditForm`).style.display = 'none';
+            
+            // Restore original values
+            if (field === 'name') {
+                document.getElementById('firstName').value = originalValues.firstName;
+                document.getElementById('lastName').value = originalValues.lastName;
+            } else if (field === 'headerEmail') {
+                document.getElementById('headerEmailInput').value = originalValues.headerEmail;
+            } else {
+                document.getElementById(`${field}Input`).value = originalValues[field];
+            }
+        }
+        
+        // Validate email format
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+        
+        // Validate username format
+        function isValidUsername(username) {
+            const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
+            return usernameRegex.test(username);
+        }
+        
+        // Validate phone format (simple North American format)
+        function isValidPhone(phone) {
+            const phoneRegex = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+            return phoneRegex.test(phone);
+        }
+        
+        // Save header email changes
+        function saveHeaderEmail() {
+            const email = document.getElementById('headerEmailInput').value.trim();
+            
+            // Validation
+            if (!isValidEmail(email)) {
+                alert('Please enter a valid email address');
+                return;
+            }
+            
+            // Update display
+            document.getElementById('emailDisplay').innerHTML = 
+                `${email} <span class="verified-badge"><i class="bi bi-patch-check-fill"></i> Verified</span>`;
+            
+            // Hide edit form
+            document.getElementById('headerEmailEditForm').style.display = 'none';
+            
+            // Show success notification
+            showNotification();
+        }
+        
+        // Save username changes
+        function saveUsername() {
+            const username = document.getElementById('usernameInput').value.trim();
+            
+            // Validation
+            if (!isValidUsername(username)) {
+                alert('Username must be 3-20 characters and can only contain letters, numbers, and underscores');
+                return;
+            }
+            
+            // Update display
+            document.getElementById('usernameDisplay').textContent = username;
+            
+            // Update the username in the navbar
+            document.querySelector('.navbar .d-flex span strong').textContent = username;
+            
+            // Hide edit form
+            document.getElementById('usernameEditForm').style.display = 'none';
+            
+            // Show success notification
+            showNotification();
+        }
+        
+        // Save name changes
+        function saveName() {
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            
+            // Validation
+            if (!firstName || !lastName) {
+                alert('Please enter both first and last name');
+                return;
+            }
+            
+            // Update display
+            document.getElementById('nameDisplay').textContent = `${firstName} ${lastName}`;
+            document.getElementById('displayName').textContent = `${firstName} ${lastName}`;
+            document.getElementById('avatarInitials').textContent = `${firstName[0]}${lastName[0]}`;
+            
+            // Hide edit form
+            document.getElementById('nameEditForm').style.display = 'none';
+            
+            // Show success notification
+            showNotification();
+        }
+        
+        // Save phone changes
+        function savePhone() {
+            const phone = document.getElementById('phoneInput').value.trim();
+            
+            // Validation
+            if (!isValidPhone(phone)) {
+                alert('Please enter a valid phone number (10 digits)');
+                return;
+            }
+            
+            // Format phone number for display
+            const formattedPhone = `(${phone.substring(0, 3)}) ${phone.substring(3, 6)}-${phone.substring(6)}`;
+            
+            // Update display
+            document.querySelector('#phoneEditForm').previousElementSibling
+                .querySelector('.info-value').innerHTML = 
+                `${formattedPhone} <span class="verified-badge"><i class="bi bi-patch-check-fill"></i> Verified</span>`;
+            
+            // Hide edit form
+            document.getElementById('phoneEditForm').style.display = 'none';
+            
+            // Show success notification
+            showNotification();
+        }
+        
+        // Show success notification
+        function showNotification() {
+            const notification = document.getElementById('successNotification');
+            notification.style.display = 'block';
+            
+            // Hide after 3 seconds
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
 </html>
