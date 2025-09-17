@@ -129,9 +129,11 @@
     <div class="registration-form">
       <form id="verificationForm" method="POST" action="/verification">
         {% csrf_token %}
+
         <!-- Phone OTP -->
+        {% if has_phone %}
         <div class="form-group">
-          <label for="phoneOtp">Enter Phone OTP</label>
+          <label for="phoneOtp">Enter Phone OTP (sent to {{ phone_number }})</label>
           <div class="otp-boxes" id="phoneOtp">
             <input type="text" maxlength="1" required>
             <input type="text" maxlength="1" required>
@@ -142,10 +144,11 @@
           </div>
           <div class="error-message" id="phoneError">Enter a valid 6-digit OTP</div>
         </div>
+        {% endif %}
 
         <!-- Email OTP -->
         <div class="form-group">
-          <label for="emailOtp">Enter Email OTP</label>
+          <label for="emailOtp">Enter Email OTP (sent to {{ email }})</label>
           <div class="otp-boxes" id="emailOtp">
             <input type="text" maxlength="1" required>
             <input type="text" maxlength="1" required>
@@ -160,19 +163,21 @@
         <!-- Password -->
         <div class="form-group">
           <label for="password">Password</label>
-          <input type="password" id="password" required />
+          <input type="password" id="password" name="password" required />
           <span class="hint">(Min 5 chars, 1 capital, 1 special)</span>
-          <div class="error-message" id="passError">
-            Invalid password format.
-          </div>
+          <div class="error-message" id="passError">Invalid password format.</div>
         </div>
 
         <!-- Confirm Password -->
         <div class="form-group">
           <label for="confirmPassword">Confirm Password</label>
-          <input type="password" id="confirmPassword" required />
+          <input type="password" id="confirmPassword" name="confirmPassword" required />
           <div class="match-message" id="confirmMessage"></div>
         </div>
+
+        <!-- Hidden inputs for combined OTPs -->
+        <input type="hidden" name="phone_otp" id="hiddenPhoneOtp">
+        <input type="hidden" name="email_otp" id="hiddenEmailOtp">
 
         <button type="submit" class="register-button">Register</button>
       </form>
@@ -187,7 +192,6 @@
 
     function setupOtp(containerId) {
       const inputs = document.querySelectorAll(`#${containerId} input`);
-      
       inputs.forEach((input, index) => {
         input.addEventListener("input", () => {
           if (input.value.length === 1 && index < inputs.length - 1) {
@@ -199,24 +203,10 @@
             inputs[index - 1].focus();
           }
         });
-        input.addEventListener("paste", (e) => {
-          e.preventDefault();
-          const pasteData = (e.clipboardData || window.clipboardData).getData("text").trim();
-          if (/^\d+$/.test(pasteData)) {
-            pasteData.split("").forEach((char, i) => {
-              if (i < inputs.length) {
-                inputs[i].value = char;
-              }
-            });
-            if (pasteData.length >= inputs.length) {
-              inputs[inputs.length - 1].focus();
-            }
-          }
-        });
       });
     }
 
-    // Apply to both OTP fields
+    // Setup OTP fields
     setupOtp("phoneOtp");
     setupOtp("emailOtp");
 
@@ -225,7 +215,7 @@
     const confirmPassword = document.getElementById("confirmPassword");
     const confirmMessage = document.getElementById("confirmMessage");
 
-    // Real-time confirm password check
+    // Password match check
     confirmPassword.addEventListener("input", () => {
       if (confirmPassword.value === "") {
         confirmMessage.style.display = "none";
@@ -243,11 +233,14 @@
     });
 
     form.addEventListener("submit", function (e) {
-      e.preventDefault();
-      let valid = true;
-
       const phoneOtpVal = getOtpValue("phoneOtp");
       const emailOtpVal = getOtpValue("emailOtp");
+
+      // Save OTPs in hidden inputs
+      document.getElementById("hiddenPhoneOtp").value = phoneOtpVal;
+      document.getElementById("hiddenEmailOtp").value = emailOtpVal;
+
+      let valid = true;
 
       if (!/^\d{6}$/.test(phoneOtpVal)) {
         document.getElementById("phoneError").style.display = "block";
@@ -278,9 +271,7 @@
         valid = false;
       }
 
-      if (valid) {
-        alert("Registration Successful!");
-      }
+      if (!valid) e.preventDefault();
     });
   </script>
 </body>

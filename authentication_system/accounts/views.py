@@ -1,10 +1,19 @@
 from django.shortcuts import render, redirect 
-from django.http import HttpResponse
+# from django.http import HttpResponse
+from django.contrib import messages 
 from django.utils import timezone
 from .models import UserAccount
 from django.contrib.auth.hashers import make_password
 
 def registration_page(request) : 
+    context = { 
+        'username' : '', 
+        'first_name' : '', 
+        'last_name' : '', 
+        'email' : '', 
+        'phone_number' : '',
+    }
+
     if request.method == 'POST' : 
         username = request.POST.get("username")
         first_name = request.POST.get("first_name")
@@ -12,22 +21,70 @@ def registration_page(request) :
         email = request.POST.get("email")
         phone_number = request.POST.get("phone_number")
         print(first_name, last_name, username, email, phone_number, sep="\n")
-        
-        user = UserAccount(
-            username = username,
-            first_name = first_name,
-            last_name = last_name,
-            email = email,
-            phone_number = phone_number, 
-            date_joined = timezone.now()
-        )
 
-        user.save()
-        return redirect('/register/')
-    return render(request, 'accounts/registrationtemp.html')
+        context.update({
+            'username'      : username, 
+            'first_name'    : first_name, 
+            'last_name'     : last_name, 
+            'email'         : email, 
+            'phone_number'  : phone_number,
+            })
+   
+        if UserAccount.objects.filter(username=username).exists(): 
+            messages.error(request, "Username is already tacken, try something coooler")
+            return render(request=request, template_name='accounts/registrationtemp.html', context=context)
+        
+        if UserAccount.objects.filter(email=email).exists() : 
+            messages.error(request, "Email already exists, kindly login or try with another email.")
+            return render(request=request, template_name = 'accounts/registrationtemp.html', context=context)
+        
+        request.session['registrationdata'] = {
+            'username'      : username, 
+            'first_name'    : first_name, 
+            'last_name'     : last_name, 
+            'email'         : email, 
+            'phone_number'  : phone_number,
+        }
+        return redirect('verification_page')
+    return render(request, 'accounts/registrationtemp.html', context)
 
 def verification_page(request) : 
-    return render(request, 'accounts/verificationtemp.html')
+    registration_data = request.session.get('registrationdata')
+
+    if request.method == 'POST':
+        phone_otp = request.POST.get("phone_otp")
+        email_otp = request.POST.get("email_otp")
+        password = request.POST.get("password")
+        
+        if phone_otp != "222222" or email_otp != "111111":
+            messages.error(request, "Invalid OTP entered.")
+            return render(request, 'accounts/verificationtemp.html', {
+                'email' : registration_data['email'],
+                'phone_number' : registration_data['phone_number'],
+                'has_phone' : bool(registration_data['phone_number']),
+            })
+
+        # Save the user securely
+        UserAccount.objects.create(
+            username = registration_data['username'],
+            first_name = registration_data['first_name'],
+            last_name = registration_data['last_name'],
+            email = registration_data['email'],
+            phone_number = registration_data['phone_number'],
+            password = make_password(password),  
+            created_at = timezone.now(),
+        )
+
+        messages.success(request, "Registration successful! You can now log in.")
+        request.session.pop('registrationdata', None)
+        return redirect('regiter') 
+
+    return render(request, 'accounts/verificationtemp.html', {
+        'email': registration_data['email'],
+        'phone_number': registration_data['phone_number'],
+        'has_phone': bool(registration_data['phone_number']),
+    })
+     
 
 def login_page(request) : 
     return render(request, 'accounts/logintemp.html')
