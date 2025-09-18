@@ -199,20 +199,26 @@
   </head>
   <body>
     {% if messages %}
-        {% for message in messages %}
-          {% if "emailexist" in message.tags %}
-            <div class="email-error-banner">
-              {{ message }}
-            </div>
-          {% endif %}
-        {% endfor %}
-      {% endif %}
+      {% for message in messages %}
+        {% if "emailexist" in message.tags %}
+          <div class="email-error-banner">
+            {{ message }}
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+    
+    {% if messages %}
+      {% for message in messages %}
+        {% if "registrationsuccessful" in message.tags %}
+          <div class="email-error-banner">
+            {{ message }}
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
 
-    <div class="registration-container">
-
-      <!-- ✅ Email error strip at top -->
-      
-
+    <div class="registration-container"> 
       <div class="registration-header">
         <h1>Create Your Profile</h1>
       </div>

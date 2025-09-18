@@ -55,7 +55,7 @@ def verification_page(request) :
         email_otp = request.POST.get("email_otp")
         password = request.POST.get("password")
         
-        if phone_otp != "222222" or email_otp != "111111":
+        if phone_otp != "111111" or email_otp != "222222":
             messages.error(request, "Invalid OTP entered.")
             return render(request, 'accounts/verificationtemp.html', {
                 'email' : registration_data['email'],
@@ -64,19 +64,20 @@ def verification_page(request) :
             })
 
         # Save the user securely
-        UserAccount.objects.create(
+        user = UserAccount(
             username = registration_data['username'],
             first_name = registration_data['first_name'],
             last_name = registration_data['last_name'],
             email = registration_data['email'],
             phone_number = registration_data['phone_number'],
             password = make_password(password),  
-            created_at = timezone.now(),
+            date_joined = timezone.now(),
         )
 
-        messages.success(request, "Registration successful! You can now log in.")
+        user.save()
+        messages.success(request, "Registration successful, kindly singin.", extra_tags="registrationsuccessful")
         request.session.pop('registrationdata', None)
-        return redirect('regiter') 
+        return redirect('/register')
 
     return render(request, 'accounts/verificationtemp.html', {
         'email': registration_data['email'],
@@ -84,7 +85,6 @@ def verification_page(request) :
         'has_phone': bool(registration_data['phone_number']),
     })
      
-
 def login_page(request) : 
     return render(request, 'accounts/logintemp.html')
 
@@ -96,3 +96,4 @@ def forgot_password_page(request) :
 
 def home_page(request) : 
     return render(request, 'accounts/hometemp.html')
+
