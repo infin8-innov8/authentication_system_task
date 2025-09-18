@@ -20,7 +20,6 @@ def registration_page(request) :
         last_name = request.POST.get("last_name")
         email = request.POST.get("email")
         phone_number = request.POST.get("phone_number")
-        print(first_name, last_name, username, email, phone_number, sep="\n")
 
         context.update({
             'username'      : username, 
@@ -30,13 +29,13 @@ def registration_page(request) :
             'phone_number'  : phone_number,
             })
    
-        if UserAccount.objects.filter(username=username).exists(): 
-            messages.error(request, "Username is already tacken, try something coooler")
-            return render(request=request, template_name='accounts/registrationtemp.html', context=context)
-        
         if UserAccount.objects.filter(email=email).exists() : 
-            messages.error(request, "Email already exists, kindly login or try with another email.")
+            messages.error(request, "Email address already exists, kindly login or try via another email.", extra_tags="emailexist")
             return render(request=request, template_name = 'accounts/registrationtemp.html', context=context)
+        
+        if UserAccount.objects.filter(username=username).exists(): 
+            messages.error(request, "Username is already tacken, try another", extra_tags="usernameexist")
+            return render(request=request, template_name='accounts/registrationtemp.html', context=context)
         
         request.session['registrationdata'] = {
             'username'      : username, 
@@ -45,8 +44,8 @@ def registration_page(request) :
             'email'         : email, 
             'phone_number'  : phone_number,
         }
-        return redirect('verification_page')
-    return render(request, 'accounts/registrationtemp.html', context)
+        return redirect('/verification')
+    return render(request=request, template_name='accounts/registrationtemp.html', context=context)
 
 def verification_page(request) : 
     registration_data = request.session.get('registrationdata')
