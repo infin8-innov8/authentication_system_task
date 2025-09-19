@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect 
-# from django.http import HttpResponse
 from django.contrib import messages 
 from django.utils import timezone
 from .models import UserAccount
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth import authenticate, login
 
 def registration_page(request) : 
     context = { 
@@ -86,6 +86,38 @@ def verification_page(request) :
     })
      
 def login_page(request) : 
+    context = { 
+        "credential" : '',
+    }
+
+    if request.method == "POST" : 
+        credential = request.POST.get("credential")
+        password = request.POST.get("password")
+
+        if "@" in credential : 
+            try: 
+                user_object = UserAccount.objects.get(email=credential)
+                user = authenticate(request, username = user_object.username, password=password)
+                context.update({
+                    "credential" : credential,
+                })
+                
+            except UserAccount.DoesNotExist :
+                user = None
+
+        else : 
+            user = authenticate(request, username = credential, password = password)
+            context.update({
+                    "credential" : credential,
+                })
+        if user is not None : 
+            login(request, user)
+            return redirect('home')
+        
+        else : 
+            messages.error(request, "Invalid username or email", extra_tags="usernotexist")
+            return render(request, 'accounts/logintemp.html', context={"credential" : credential})
+        
     return render(request, 'accounts/logintemp.html')
 
 def reset_password_page(request) : 
@@ -96,4 +128,5 @@ def forgot_password_page(request) :
 
 def home_page(request) : 
     return render(request, 'accounts/hometemp.html')
+
 
