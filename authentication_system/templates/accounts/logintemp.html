@@ -77,14 +77,13 @@
     <div class="login-container">
         <div class="login-header">
             <h1>Welcome Back!</h1>
-            <p>Enter your credentials to access your account</p>
+            <p>Enter your credentials to sign in your profile</p>
         </div>
 
         <div class="login-form">
-            <!-- Error message container (for Django messages) -->
             {% if messages %}
                 {% for message in messages %}
-                    {% if message.extra_tags == "usernotexist" %}
+                    {% if message.tags == "usernotexist" %}
                     <div class="alert alert-error">
                         <span><i class="fas fa-exclamation-circle"></i> {{ message }}</span>
                         <button class="alert-close">&times;</button>
@@ -93,7 +92,7 @@
                 {% endfor %}
             {% endif %}
             
-            <form id="loginForm" method="POST" action="{% url 'login' %}">
+            <form id="loginForm" method="POST" action="/login/">
                 {% csrf_token %}
                 <div class="form-group">
                     <label for="username">Username or Email</label>
@@ -113,14 +112,14 @@
                         <input type="checkbox" id="remember" name="remember" />
                         <label for="remember">Remember me</label>
                     </div>
-                    <a href="#" class="forgot-password">Forgot Password?</a>
+                    <a href="/forgot_password/" class="forgot-password">Forgot Password?</a>
                 </div>
 
-                <button type="submit" class="login-button">Login to Account</button>
+                <button type="submit" class="login-button">Sign In</button>
             </form>
 
             <div class="register-link">
-                Don't have an account? <a href="#">Register Now</a>
+                Don't have an account? <a href="/register/">Register Now</a>
             </div>
         </div>
     </div>
