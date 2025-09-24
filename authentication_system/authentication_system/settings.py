@@ -113,37 +113,7 @@ USE_I18N = True
 
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
-
 STATIC_URL = 'static/'
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
-
-# DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# # LDAP Confugurations
-
-# AUTHENTICATION_BACKEND = [
-#     'django_auth_ldap.backend.LDAPBackend',
-#     'django.contrib.auth.backends.ModelBackend',
-    
-# ]
-
-# AUTH_LDAP_SERVER_URI = os.getenv('AUTH_LDAP_SERVER_URI')
-# AUTH_LDAP_BIND_DN = os.getenv('BIND_DN')
-# AUTH_LDAP_BIND_PASSWORD = os.getenv('BIND_PASSWORD')
-
-# # The search base and filter for finding users.
-# # %(user)s will be replaced with the username entered by the user.
-# AUTH_LDAP_USER_SEARCH = LDAPSearch(
-#     os.getenv('SEARCH_BASE_DN'),
-#     ldap.SCOPE_SUBTREE,            # The scope of the search
-#     "(uid=%(user)s)"               # The search filter
-#     # For Active Directory, you might use: "(sAMAccountName=%(user)s)"
-# )
 
 AUTHENTICATION_BACKENDS = [
     'django_auth_ldap.backend.LDAPBackend',
