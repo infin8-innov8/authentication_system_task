@@ -31,13 +31,13 @@ def registration_page(request) :
             'phone_number'  : phone_number,
             })
    
-        # if UserAccount.objects.filter(email=email).exists() : 
-        #     messages.error(request, "Email address already exists, kindly login or try via another email.", extra_tags="emailexist")
-        #     return render(request=request, template_name = 'accounts/registrationtemp.html', context=context)
+        if UserAccount.objects.filter(email=email).exists() : 
+            messages.error(request, "Email address already exists, kindly login or try via another email address.", extra_tags="emailexist")
+            return render(request=request, template_name = 'accounts/registrationtemp.html', context=context)
         
-        # if UserAccount.objects.filter(username=username).exists(): 
-        #     messages.error(request, "Username is already tacken, try another", extra_tags="usernameexist")
-        #     return render(request=request, template_name='accounts/registrationtemp.html', context=context)
+        if UserAccount.objects.filter(username=username).exists(): 
+            messages.error(request, "Username is already tacken, try another", extra_tags="usernameexist")
+            return render(request=request, template_name='accounts/registrationtemp.html', context=context)
         
         request.session['registrationdata'] = {
             'username'      : username, 
@@ -147,7 +147,10 @@ def login_page(request):
         else:
             if UserAccount.objects.filter(username=username).exists():
                 messages.error(request, "Incorrect password, Please try again.", extra_tags="wrongpassword")
-            
+            else:
+                messages.error(request, "No account found with this username", extra_tags="usernotexist")
+
+            context['credential'] = credential
             return render(request, 'accounts/logintemp.html', context=context)
     
     return render(request, 'accounts/logintemp.html', context=context)
@@ -159,6 +162,15 @@ def forgot_password_page(request) :
     return render(request, 'accounts/forgot_passwordtemp.html')
 
 def home_page(request) : 
-    return render(request, 'accounts/hometemp.html')
+    user = request.user
+    return render(request, 'accounts/hometemp.html', context = { 'name' : user.first_name})
 
-
+def user_profile(request) : 
+    user = request.user
+    return render(request, 'accounts/userinformationtemp.html', context = {
+        'username' : user.username,
+        'first_name' : user.first_name,
+        'last_name' : user.last_name, 
+        'email' : user.email, 
+        'phone_number' : user.phone_number,
+        })
