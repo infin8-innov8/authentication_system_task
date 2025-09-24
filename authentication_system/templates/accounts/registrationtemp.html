@@ -200,21 +200,7 @@
   <body>
     {% if messages %}
       {% for message in messages %}
-        {% if "emailexist" in message.tags %}
-          <div class="email-error-banner">
-            {{ message }}
-          </div>
-        {% endif %}
-      {% endfor %}
-    {% endif %}
-    
-    {% if messages %}
-      {% for message in messages %}
-        {% if "registrationsuccessful" in message.tags %}
-          <div class="email-error-banner">
-            {{ message }}
-          </div>
-        {% endif %}
+        {{message}}
       {% endfor %}
     {% endif %}
 
