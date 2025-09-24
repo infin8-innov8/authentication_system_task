@@ -10,8 +10,9 @@ from django_auth_ldap.config import LDAPSearch, GroupOfNamesType
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 #the custom model is used # Register your models here.
-
 AUTH_USER_MODEL = 'accounts.UserAccount'
+
+load_dotenv()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -121,28 +122,50 @@ STATIC_URL = 'static/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# LDAP Confugurations
+# # LDAP Confugurations
 
-AUTHENTICATION_BACKEND = [
-    'django_auth_ldap.backend.LDAPBackend',
-    'django.contrib.auth.backends.ModelBackend',
+# AUTHENTICATION_BACKEND = [
+#     'django_auth_ldap.backend.LDAPBackend',
+#     'django.contrib.auth.backends.ModelBackend',
     
+# ]
+
+# AUTH_LDAP_SERVER_URI = os.getenv('AUTH_LDAP_SERVER_URI')
+# AUTH_LDAP_BIND_DN = os.getenv('BIND_DN')
+# AUTH_LDAP_BIND_PASSWORD = os.getenv('BIND_PASSWORD')
+
+# # The search base and filter for finding users.
+# # %(user)s will be replaced with the username entered by the user.
+# AUTH_LDAP_USER_SEARCH = LDAPSearch(
+#     os.getenv('SEARCH_BASE_DN'),
+#     ldap.SCOPE_SUBTREE,            # The scope of the search
+#     "(uid=%(user)s)"               # The search filter
+#     # For Active Directory, you might use: "(sAMAccountName=%(user)s)"
+# )
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'django_auth_ldap.backend.LDAPBackend',
 ]
 
 AUTH_LDAP_SERVER_URI = os.getenv('AUTH_LDAP_SERVER_URI')
+AUTH_LDAP_BIND_DN = os.getenv('AUTH_LDAP_BIND_DN')
+AUTH_LDAP_BIND_PASSWORD = os.getenv('AUTH_LDAP_BIND_PASSWORD')
+SEARCH_BASE_DN=os.getenv('AUTH_LDAP_SEARCH_BASE_DN')
 
-# The credentials for a "bind" user. This is a service account that has
-# permissions to search the directory.
-AUTH_LDAP_BIND_DN = os.getenv('BIND_DN')
-AUTH_LDAP_BIND_PASSWORD = os.getenv('BIND_PASSWORD')
-
-# The search base and filter for finding users.
-# %(user)s will be replaced with the username entered by the user.
 AUTH_LDAP_USER_SEARCH = LDAPSearch(
-    os.getenv('SEARCH_BASE_DN'),
-    ldap.SCOPE_SUBTREE,            # The scope of the search
-    "(uid=%(user)s)"               # The search filter
-    # For Active Directory, you might use: "(sAMAccountName=%(user)s)"
+    os.getenv('AUTH_LDAP_SEARCH_BASE_DN'),
+    ldap.SCOPE_SUBTREE,
+    "(uid=%(user)s)"
 )
+
+LDAP_USERS_BASE_DN = os.getenv('LDAP_USERS_BASE_DN')
+AUTH_LDAP_USER_ATTR_MAP = {
+    "first_name": "givenName",
+    "last_name": "sn",
+    "email": "mail",
+    "phone_number" : "telephonenumber",
+}
+
