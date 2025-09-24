@@ -146,8 +146,8 @@ STATIC_URL = 'static/'
 # )
 
 AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
     'django_auth_ldap.backend.LDAPBackend',
+    'django.contrib.auth.backends.ModelBackend',
 ]
 
 AUTH_LDAP_SERVER_URI = os.getenv('AUTH_LDAP_SERVER_URI')
