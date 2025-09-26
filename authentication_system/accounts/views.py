@@ -6,6 +6,7 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth import authenticate, login
 from django.conf import settings
 import ldap 
+from django.contrib.auth.decorators import login_required
 
 def registration_page(request) : 
     context = { 
@@ -161,16 +162,54 @@ def reset_password_page(request) :
 def forgot_password_page(request) : 
     return render(request, 'accounts/forgot_passwordtemp.html')
 
+@login_required
 def home_page(request) : 
     user = request.user
-    return render(request, 'accounts/hometemp.html', context = { 'name' : user.first_name})
+    return render(request, 'accounts/hometemp.html', context = { 'name' : user.first_name.upper()})
 
-def user_profile(request) : 
+def user_profile_page(request) : 
     user = request.user
-    return render(request, 'accounts/userinformationtemp.html', context = {
-        'username' : user.username,
-        'first_name' : user.first_name,
-        'last_name' : user.last_name, 
-        'email' : user.email, 
-        'phone_number' : user.phone_number,
-        })
+
+    if request.method == 'POST' : 
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        phone_number = request.POST.get('phone_number')
+        try: 
+             # connection and updating values in ldap
+            con = ldap.initialize(settings.AUTH_LDAP_SERVER_URI)
+            con.simple_bind_s(settings.AUTH_LDAP_BIND_DN, settings.AUTH_LDAP_BIND_PASSWORD)
+            base_dn = settings.AUTH_LDAP_USER_SEARCH.base_dn
+            dn = f"uid={user.username},{base_dn}"
+
+            mod_attrs = [
+                (ldap.MOD_REPLACE, 'givenName', [first_name.encode('utf-8')]),
+                (ldap.MOD_REPLACE, 'sn', [last_name.encode('utf-8')]),
+                (ldap.MOD_REPLACE, 'mail', [email.encode('utf-8')]),
+                (ldap.MOD_REPLACE, 'telephoneNumber', [phone_number.encode('utf-8')]),
+                (ldap.MOD_REPLACE, 'cn', [f"{first_name} {last_name}".encode('utf-8')]),
+            ]
+
+            # updating database values
+            user.first_name = first_name
+            user.last_name = last_name
+            user.username = username
+            user.email = email 
+            user.phone_number = phone_number
+
+            # Apply the modifications to the LDAP directory and database
+            con.modify_s(dn, mod_attrs)
+            con.unbind_s()
+            user.save()
+
+            messages.success(request, 'Your profile has been updated successfuly!', extra_tags='user-update-success')
+            return redirect('/profile')
+
+
+        except ldap.NO_SUCH_OBJECT:
+            messages.error(request, f"User '{user.username}' not found in LDAP. Local profile was updated, but LDAP was not.")
+
+        except Exception as e: 
+            messages.error(request, f'error : {e}', extra_tags ='error') 
+    return render(request, 'accounts/user_informationtemp.html', context = {'user' : user})

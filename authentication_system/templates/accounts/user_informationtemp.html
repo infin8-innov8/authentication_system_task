@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>User Profile</title>
+    <title>Profile</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -154,7 +154,6 @@
   </head>
 
   <body>
-    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
       <div class="container">
         <a class="navbar-brand" href="#">
@@ -187,7 +186,7 @@
                 Profiles
               </a>
               <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">My Profile</a></li>
+                <li><a class="dropdown-item" href="">My Profile</a></li>
                 <li><a class="dropdown-item" href="#">Settings</a></li>
                 <li><hr class="dropdown-divider" /></li>
                 <li><a class="dropdown-item" href="#">Logout</a></li>
@@ -196,7 +195,9 @@
           </ul>
 
           <div class="d-flex align-items-center">
-            <span class="me-3">Hello, <strong>{{first_name}}</strong></span>
+            <span class="me-3"
+              >Hello, <strong>{{ user.first_name }}</strong></span
+            >
             <form class="d-flex">
               <input
                 class="form-control me-2"
@@ -212,21 +213,43 @@
       </div>
     </nav>
 
-    <!-- Main Content -->
-    <div class="container my-5">
+    <div class="container my-5">      
+      {% if messages %} 
+          {% for message in messages %} 
+              {% if 'user-update-success' in message.tags %}
+                  <div
+                    class="alert alert-success d-flex align-items-center justify-content-between"
+                    role="alert"
+                  >
+                    <span><i class="bi bi-check-circle-fill me-2"></i>{{ message }}</span>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="alert"
+                      aria-label="Close"
+                    ></button>
+                  </div>
+              {% endif %} 
+              
+              {% if 'error' in message.tags %}
+                  <div class="alert alert-error">
+                    <span><i class="fas fa-exclamation-circle"></i> {{ message }}</span>
+                    <button class="alert-close">&times;</button>
+                  </div>
+              {% endif %}
+          {% endfor %} 
+      {% endif %}
       <div class="row justify-content-center">
         <div class="col-lg-8">
           <div class="profile-card">
             <div class="profile-header">
-              <div class="profile-avatar" id="avatarInitials">{{first_name.0}}{{last_name.0}}</div>
+              <div class="profile-avatar" id="avatarInitials">
+                {{ user.first_name.0 }}{{ user.last_name.0 }}
+              </div>
               <div class="profile-info">
-                <h2 id="displayName">{{first_name}} {{last_name}}</h2>
-                <div class="profile-email" id="emailDisplay">
-                  {{email}}
-                  <span class="verified-badge"
-                    ><i class="bi bi-patch-check-fill"></i> Verified</span
-                  >
-                </div>
+                <h2 id="displayName">
+                  {{ user.first_name }} {{ user.last_name }}
+                </h2>
               </div>
               <div class="email-edit-container">
                 <i
@@ -236,13 +259,11 @@
               </div>
             </div>
 
-            <!-- Edit Form -->
             <div class="form-edit-mode" id="editForm">
               <h5 class="mb-4">Edit Profile Information</h5>
-              
-              <!-- Form with method and action -->
-              <form id="profileForm" method="POST" action="/update-profile">
-                <!-- Name Fields -->
+
+              <form id="profileForm" method="POST" action="/profile/">
+                {% csrf_token %}
                 <div class="row mb-3">
                   <div class="col-md-6">
                     <label for="firstName" class="form-label">First Name</label>
@@ -251,9 +272,8 @@
                       class="form-control"
                       id="firstName"
                       name="first_name"
-                      value="{{first_name}}"
+                      value="{{ user.first_name }}"
                     />
-                    <div class="help-text">Required field</div>
                   </div>
                   <div class="col-md-6">
                     <label for="lastName" class="form-label">Last Name</label>
@@ -262,13 +282,11 @@
                       class="form-control"
                       id="lastName"
                       name="last_name"
-                      value="{{last_name}}"
+                      value="{{ user.last_name }}"
                     />
-                    <div class="help-text">Required field</div>
                   </div>
                 </div>
-                
-                <!-- Username Field -->
+
                 <div class="mb-3">
                   <label for="usernameInput" class="form-label">Username</label>
                   <input
@@ -276,46 +294,47 @@
                     class="form-control"
                     id="usernameInput"
                     name="username"
-                    value="{{username}}"
+                    value="{{ user.username }}"
+                    readonly
                   />
-                  <div class="help-text">
-                    Must be 3-20 characters, letters, numbers, and underscores
-                    only
-                  </div>
                 </div>
-                
-                <!-- Email Field -->
+
                 <div class="mb-3">
-                  <label for="emailInput" class="form-label">Email Address</label>
+                  <label for="emailInput" class="form-label"
+                    >Email Address</label
+                  >
                   <input
                     type="email"
                     class="form-control"
                     id="emailInput"
                     name="email"
-                    value="{{email}}"
+                    value="{{ user.email }}"
                   />
-                  <div class="help-text">Enter a valid email address</div>
                 </div>
-                
-                <!-- Phone Field with 4-2-4 format -->
+
                 <div class="mb-3">
-                  <label for="phoneInput" class="form-label">Phone Number</label>
+                  <label for="phoneInput" class="form-label"
+                    >Phone Number</label
+                  >
                   <input
                     type="tel"
                     class="form-control"
                     id="phoneInput"
                     name="phone_number"
-                    placeholder="1234-56-7890"
-                    value="{{phone_number}}"
+                    placeholder="1234 56 7890"
+                    value="{{ user.phone_number }}"
                   />
-                  <div class="help-text">Enter a valid phone number in 4-2-4 format (e.g., 1234-56-7890)</div>
                 </div>
-                
+
                 <div class="d-flex justify-content-end gap-2">
-                  <button type="button" class="btn btn-secondary" onclick="cancelEdit()">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    onclick="cancelEdit()"
+                  >
                     Cancel
                   </button>
-                  <button type="button" class="btn btn-primary" onclick="saveAll()">
+                  <button type="submit" class="btn btn-primary">
                     Save All Changes
                   </button>
                 </div>
@@ -323,40 +342,39 @@
               <hr />
             </div>
 
-            <!-- Personal Information Section -->
-            <h5 class="mb-4">Personal Information</h5>
+            <div id="displayInfo">
+              <h5 class="mb-4">Personal Information</h5>
 
-            <!-- Username Field -->
-            <div class="info-item">
-              <div>
-                <div class="info-label">USERNAME</div>
-                <div class="info-value" id="usernameDisplay">{{username}}</div>
-                <div class="profile-email mt-1" id="emailPreview">
-                  {{email}}
-                  <span class="verified-badge"
-                    ><i class="bi bi-patch-check-fill"></i> Verified</span
-                  >
+              <div class="info-item">
+                <div>
+                  <div class="info-label">USERNAME</div>
+                  <div class="info-value" id="usernameDisplay">
+                    {{ user.username }}
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <!-- Name Field -->
-            <div class="info-item">
-              <div>
-                <div class="info-label">FULL NAME</div>
-                <div class="info-value" id="nameDisplay">{{first_name}} {{last_name}}</div>
+              <div class="info-item">
+                <div>
+                  <div class="info-label">EMAIL</div>
+                  <div class="info-value" id="emailDisplay">
+                    {{ user.email }}
+                    <span class="verified-badge"
+                      ><i class="bi bi-patch-check-fill"></i> Verified</span
+                    >
+                  </div>
+                </div>
               </div>
-            </div>
 
-            <!-- Phone Field -->
-            <div class="info-item">
-              <div>
-                <div class="info-label">PHONE</div>
-                <div class="info-value" id="phoneDisplay">
-                  {{phone_number}}
-                  <span class="verified-badge"
-                    ><i class="bi bi-patch-check-fill"></i> Verified</span
-                  >
+              <div class="info-item">
+                <div>
+                  <div class="info-label">PHONE</div>
+                  <div class="info-value" id="phoneDisplay">
+                    {{ user.phone_number }}
+                    <span class="verified-badge"
+                      ><i class="bi bi-patch-check-fill"></i> Verified</span
+                    >
+                  </div>
                 </div>
               </div>
             </div>
@@ -365,7 +383,6 @@
       </div>
     </div>
 
-    <!-- Success Notification -->
     <div class="notification" id="successNotification">
       <i class="bi bi-check-circle-fill me-2"></i> Your changes have been saved
       successfully!
@@ -374,161 +391,24 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-      // Store original values for cancel operation
-      let originalValues = {};
-
-      // Toggle between view and edit modes
       function toggleEditMode() {
         const editForm = document.getElementById("editForm");
-        
+        const displayInfo = document.getElementById("displayInfo");
+
         if (editForm.style.display === "block") {
           editForm.style.display = "none";
+          displayInfo.style.display = "block";
         } else {
-          // Store original values before showing the form
-          originalValues.firstName = document.getElementById("firstName").value;
-          originalValues.lastName = document.getElementById("lastName").value;
-          originalValues.username = document.getElementById("usernameInput").value;
-          originalValues.email = document.getElementById("emailInput").value;
-          originalValues.phone = document.getElementById("phoneInput").value;
-          
           editForm.style.display = "block";
+          displayInfo.style.display = "none";
         }
       }
 
-      // Cancel editing
       function cancelEdit() {
-        // Hide the edit form
-        document.getElementById("editForm").style.display = "none";
-
-        // Restore original values
-        document.getElementById("firstName").value = originalValues.firstName;
-        document.getElementById("lastName").value = originalValues.lastName;
-        document.getElementById("usernameInput").value = originalValues.username;
-        document.getElementById("emailInput").value = originalValues.email;
-        document.getElementById("phoneInput").value = originalValues.phone;
+        // Simple hide/show is enough, no need to restore values
+        // as the page will reload on a real submission or navigation.
+        toggleEditMode();
       }
-
-      // Validate email format
-      function isValidEmail(email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
-      }
-
-      // Validate username format
-      function isValidUsername(username) {
-        const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
-        return usernameRegex.test(username);
-      }
-
-      // Validate phone format (4-2-4 format)
-      function isValidPhone(phone) {
-        const phoneRegex = /^\d{4}-\d{2}-\d{4}$/;
-        return phoneRegex.test(phone);
-      }
-
-      // Format phone number to 4-2-4 format
-      function formatPhoneNumber(phone) {
-        // Remove all non-digit characters
-        const digits = phone.replace(/\D/g, '');
-        
-        // Format as 4-2-4 if we have exactly 10 digits
-        if (digits.length === 10) {
-          return `${digits.substring(0, 4)}-${digits.substring(4, 6)}-${digits.substring(6)}`;
-        }
-        
-        // Return original if not exactly 10 digits
-        return phone;
-      }
-
-      // Save all changes
-      function saveAll() {
-        const firstName = document.getElementById("firstName").value.trim();
-        const lastName = document.getElementById("lastName").value.trim();
-        const username = document.getElementById("usernameInput").value.trim();
-        const email = document.getElementById("emailInput").value.trim();
-        const phone = document.getElementById("phoneInput").value.trim();
-
-        // Validation
-        if (!firstName || !lastName) {
-          alert("Please enter both first and last name");
-          return;
-        }
-
-        if (!isValidUsername(username)) {
-          alert(
-            "Username must be 3-20 characters and can only contain letters, numbers, and underscores"
-          );
-          return;
-        }
-
-        if (!isValidEmail(email)) {
-          alert("Please enter a valid email address");
-          return;
-        }
-
-        // Format phone number to 4-2-4 before validation
-        const formattedPhone = formatPhoneNumber(phone);
-        
-        if (!isValidPhone(formattedPhone)) {
-          alert("Please enter a valid phone number in 4-2-4 format (e.g., 1234-56-7890)");
-          return;
-        }
-
-        // Update all displays
-        document.getElementById("nameDisplay").textContent = `${firstName} ${lastName}`;
-        document.getElementById("displayName").textContent = `${firstName} ${lastName}`;
-        document.getElementById("avatarInitials").textContent = `${firstName[0]}${lastName[0]}`;
-        
-        document.getElementById("usernameDisplay").textContent = username;
-        document.querySelector(".navbar .d-flex span strong").textContent = firstName;
-        
-        document.getElementById("emailDisplay").innerHTML = `${email} <span class="verified-badge"><i class="bi bi-patch-check-fill"></i> Verified</span>`;
-        document.getElementById("emailPreview").innerHTML = `${email} <span class="verified-badge"><i class="bi bi-patch-check-fill"></i> Verified</span>`;
-        
-        // Update phone display with formatted number
-        document.getElementById("phoneDisplay").innerHTML = `${formattedPhone} <span class="verified-badge"><i class="bi bi-patch-check-fill"></i> Verified</span>`;
-        
-        // Update the phone input value with formatted number
-        document.getElementById("phoneInput").value = formattedPhone;
-
-        // Hide edit form
-        document.getElementById("editForm").style.display = "none";
-
-        // Show success notification
-        showNotification();
-
-        // Submit the form (optional - uncomment if you want actual form submission)
-        // document.getElementById("profileForm").submit();
-      }
-
-      // Show success notification
-      function showNotification() {
-        const notification = document.getElementById("successNotification");
-        notification.style.display = "block";
-
-        // Hide after 3 seconds
-        setTimeout(() => {
-          notification.style.display = "none";
-        }, 3000);
-      }
-
-      // Auto-format phone number as user types
-      document.getElementById("phoneInput").addEventListener("input", function(e) {
-        const input = e.target.value.replace(/\D/g, ''); // Remove non-digits
-        let formattedValue = '';
-        
-        if (input.length > 0) {
-          formattedValue = input.substring(0, 4);
-          if (input.length > 4) {
-            formattedValue += '-' + input.substring(4, 6);
-          }
-          if (input.length > 6) {
-            formattedValue += '-' + input.substring(6, 10);
-          }
-        }
-        
-        e.target.value = formattedValue;
-      });
     </script>
   </body>
 </html>

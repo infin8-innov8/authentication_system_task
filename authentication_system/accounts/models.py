@@ -14,10 +14,10 @@ class UserAccount(AbstractUser) :
 
     def save(self, *args, **kwargs) : 
         if self.first_name : 
-            self.first_name = self.first_name.upper()
+            self.first_name = self.first_name.title()
 
         if self.first_name : 
-            self.last_name = self.last_name.upper()
+            self.last_name = self.last_name.title()
 
         super().save(*args, **kwargs)
 
