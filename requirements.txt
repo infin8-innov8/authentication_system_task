@@ -11,3 +11,4 @@ sqlparse==0.5.3
 pymysql==1.1.2
 cryptography==45.0.7 
 pycparser==2.23
+logining==1.1.0
