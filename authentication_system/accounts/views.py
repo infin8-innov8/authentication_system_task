@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.utils import timezone
 from .models import UserAccount
 from django.contrib.auth.hashers import make_password
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.conf import settings
 import ldap 
 from django.contrib.auth.decorators import login_required
@@ -297,3 +297,8 @@ def user_profile_page(request):
             messages.error(request, f'Error updating profile: {str(e)}', extra_tags='error')
     
     return render(request, 'accounts/user_informationtemp.html', context={'user': user})
+
+def logout_user(request) : 
+    logout(request)
+    messages.success(request, "You have been logged out successfully.")
+    return redirect('/login/')

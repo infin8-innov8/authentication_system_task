@@ -1143,3 +1143,95 @@ INFO 2025-09-30 12:17:37,448 basehttp "GET /profile/ HTTP/1.1" 200 15123
 INFO 2025-09-30 12:17:44,698 basehttp "POST /profile/ HTTP/1.1" 302 0
 INFO 2025-09-30 12:17:44,702 basehttp "GET /profile HTTP/1.1" 301 0
 INFO 2025-09-30 12:17:44,706 basehttp "GET /profile/ HTTP/1.1" 200 15761
+INFO 2025-09-30 12:25:23,585 autoreload /home/pranav_vasankar/IUCAA_tasks/authentication_system_task/authentication_system/accounts/views.py changed, reloading.
+INFO 2025-09-30 12:25:23,774 autoreload Watching for file changes with StatReloader
+INFO 2025-09-30 12:27:20,085 autoreload /home/pranav_vasankar/IUCAA_tasks/authentication_system_task/authentication_system/accounts/views.py changed, reloading.
+INFO 2025-09-30 12:27:20,259 autoreload Watching for file changes with StatReloader
+INFO 2025-09-30 12:29:25,583 autoreload /home/pranav_vasankar/IUCAA_tasks/authentication_system_task/authentication_system/accounts/urls.py changed, reloading.
+INFO 2025-09-30 12:29:25,754 autoreload Watching for file changes with StatReloader
+INFO 2025-09-30 12:29:39,838 autoreload /home/pranav_vasankar/IUCAA_tasks/authentication_system_task/authentication_system/accounts/views.py changed, reloading.
+INFO 2025-09-30 12:29:40,012 autoreload Watching for file changes with StatReloader
+INFO 2025-09-30 12:31:05,241 basehttp "GET /profile/ HTTP/1.1" 200 15130
+INFO 2025-09-30 12:31:05,523 basehttp "GET /profile/ HTTP/1.1" 200 15130
+INFO 2025-09-30 12:31:05,734 basehttp "GET /profile/ HTTP/1.1" 200 15130
+INFO 2025-09-30 12:31:05,893 basehttp "GET /profile/ HTTP/1.1" 200 15130
+INFO 2025-09-30 12:31:11,094 basehttp "GET /profile/ HTTP/1.1" 200 15130
+WARNING 2025-09-30 12:31:13,558 log Not Found: /logout/
+WARNING 2025-09-30 12:31:13,558 basehttp "GET /logout/ HTTP/1.1" 404 4301
+WARNING 2025-09-30 12:32:12,742 log Not Found: /logout/
+WARNING 2025-09-30 12:32:12,742 basehttp "GET /logout/ HTTP/1.1" 404 4301
+INFO 2025-09-30 12:32:28,471 autoreload /home/pranav_vasankar/IUCAA_tasks/authentication_system_task/authentication_system/accounts/urls.py changed, reloading.
+INFO 2025-09-30 12:32:28,649 autoreload Watching for file changes with StatReloader
+ERROR 2025-09-30 12:32:32,417 log Internal Server Error: /logout/
+Traceback (most recent call last):
+  File "/home/pranav_vasankar/IUCAA_tasks/authentication_system_task/.venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pranav_vasankar/IUCAA_tasks/authentication_system_task/.venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pranav_vasankar/IUCAA_tasks/authentication_system_task/authentication_system/accounts/views.py", line 302, in logout
+    logout(request)
+  File "/home/pranav_vasankar/IUCAA_tasks/authentication_system_task/authentication_system/accounts/views.py", line 302, in logout
+    logout(request)
+  File "/home/pranav_vasankar/IUCAA_tasks/authentication_system_task/authentication_system/accounts/views.py", line 302, in logout
+    logout(request)
+  [Previous line repeated 959 more times]
+RecursionError: maximum recursion depth exceeded
+ERROR 2025-09-30 12:32:32,426 basehttp "GET /logout/ HTTP/1.1" 500 3127687
+INFO 2025-09-30 12:33:47,891 autoreload /home/pranav_vasankar/IUCAA_tasks/authentication_system_task/authentication_system/accounts/views.py changed, reloading.
+INFO 2025-09-30 12:33:48,081 autoreload Watching for file changes with StatReloader
+INFO 2025-09-30 12:34:35,244 autoreload /home/pranav_vasankar/IUCAA_tasks/authentication_system_task/authentication_system/accounts/views.py changed, reloading.
+INFO 2025-09-30 12:34:35,452 autoreload Watching for file changes with StatReloader
+INFO 2025-09-30 12:34:44,559 autoreload /home/pranav_vasankar/IUCAA_tasks/authentication_system_task/authentication_system/accounts/urls.py changed, reloading.
+INFO 2025-09-30 12:34:44,741 autoreload Watching for file changes with StatReloader
+ERROR 2025-09-30 12:34:47,779 log Internal Server Error: /logout/
+Traceback (most recent call last):
+  File "/home/pranav_vasankar/IUCAA_tasks/authentication_system_task/.venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pranav_vasankar/IUCAA_tasks/authentication_system_task/.venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pranav_vasankar/IUCAA_tasks/authentication_system_task/authentication_system/accounts/views.py", line 302, in logout_user
+    djanologout(request)
+    ^^^^^^^^^^^
+NameError: name 'djanologout' is not defined
+ERROR 2025-09-30 12:34:47,779 basehttp "GET /logout/ HTTP/1.1" 500 70798
+INFO 2025-09-30 12:34:51,247 basehttp "GET /profile/ HTTP/1.1" 200 15130
+INFO 2025-09-30 12:34:51,510 basehttp "GET /profile/ HTTP/1.1" 200 15130
+INFO 2025-09-30 12:34:51,726 basehttp "GET /profile/ HTTP/1.1" 200 15130
+INFO 2025-09-30 12:34:51,932 basehttp "GET /profile/ HTTP/1.1" 200 15130
+INFO 2025-09-30 12:34:52,133 basehttp "GET /profile/ HTTP/1.1" 200 15130
+ERROR 2025-09-30 12:34:53,165 log Internal Server Error: /logout/
+Traceback (most recent call last):
+  File "/home/pranav_vasankar/IUCAA_tasks/authentication_system_task/.venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pranav_vasankar/IUCAA_tasks/authentication_system_task/.venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pranav_vasankar/IUCAA_tasks/authentication_system_task/authentication_system/accounts/views.py", line 302, in logout_user
+    djanologout(request)
+    ^^^^^^^^^^^
+NameError: name 'djanologout' is not defined
+ERROR 2025-09-30 12:34:53,165 basehttp "GET /logout/ HTTP/1.1" 500 70798
+INFO 2025-09-30 12:35:04,881 autoreload /home/pranav_vasankar/IUCAA_tasks/authentication_system_task/authentication_system/accounts/views.py changed, reloading.
+INFO 2025-09-30 12:35:05,048 autoreload Watching for file changes with StatReloader
+INFO 2025-09-30 12:35:07,041 basehttp "GET /logout/ HTTP/1.1" 302 0
+INFO 2025-09-30 12:35:07,045 basehttp "GET /login/ HTTP/1.1" 200 8451
+INFO 2025-09-30 12:35:07,858 basehttp "GET /login/ HTTP/1.1" 200 8226
+INFO 2025-09-30 12:35:08,050 basehttp "GET /login/ HTTP/1.1" 200 8226
+INFO 2025-09-30 12:35:08,636 basehttp "GET /login/ HTTP/1.1" 200 8226
+INFO 2025-09-30 12:35:08,859 basehttp "GET /login/ HTTP/1.1" 200 8226
+INFO 2025-09-30 12:35:15,296 basehttp "GET /home/ HTTP/1.1" 302 0
+WARNING 2025-09-30 12:35:15,300 log Not Found: /accounts/login/
+WARNING 2025-09-30 12:35:15,301 basehttp "GET /accounts/login/?next=/home/ HTTP/1.1" 404 4338
+INFO 2025-09-30 12:35:34,781 basehttp "POST /login/ HTTP/1.1" 302 0
+INFO 2025-09-30 12:35:34,785 basehttp "GET /home/ HTTP/1.1" 200 2726
+INFO 2025-09-30 12:35:37,072 basehttp "GET /logout/ HTTP/1.1" 302 0
+INFO 2025-09-30 12:35:37,075 basehttp "GET /login/ HTTP/1.1" 200 8451
+INFO 2025-09-30 12:36:49,364 autoreload /home/pranav_vasankar/IUCAA_tasks/authentication_system_task/authentication_system/accounts/views.py changed, reloading.
+INFO 2025-09-30 12:36:49,541 autoreload Watching for file changes with StatReloader
+INFO 2025-09-30 12:37:10,503 basehttp "GET /forgot_password/ HTTP/1.1" 200 12189
+INFO 2025-09-30 12:37:49,333 basehttp "GET /forgot_password/ HTTP/1.1" 200 12189
