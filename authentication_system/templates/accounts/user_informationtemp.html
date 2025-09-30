@@ -18,28 +18,26 @@
         --google-gray: #f8f9fa;
         --google-dark-gray: #5f6368;
       }
-
+       .profile-info {
+        flex-grow: 1;
+      }
       body {
         background-color: #f8f9fa;
         font-family: "Roboto", "Segoe UI", sans-serif;
       }
-
       .profile-card {
         background: white;
         border-radius: 8px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         margin-top: 20px;
         padding: 30px;
-        transition: all 0.3s ease;
       }
-
       .profile-header {
         display: flex;
         align-items: center;
         margin-bottom: 30px;
         position: relative;
       }
-
       .profile-avatar {
         width: 100px;
         height: 100px;
@@ -53,20 +51,11 @@
         font-weight: bold;
         margin-right: 20px;
       }
-
       .profile-info h2 {
         font-weight: 500;
         margin-bottom: 5px;
         color: #202124;
       }
-
-      .profile-email {
-        color: var(--google-dark-gray);
-        font-size: 16px;
-        display: flex;
-        align-items: center;
-      }
-
       .info-item {
         display: flex;
         justify-content: space-between;
@@ -74,19 +63,16 @@
         padding: 15px 0;
         border-bottom: 1px solid #f1f3f4;
       }
-
       .info-label {
         color: var(--google-dark-gray);
         font-size: 14px;
         margin-bottom: 5px;
       }
-
       .info-value {
         font-weight: 500;
         color: #202124;
         font-size: 16px;
       }
-
       .edit-icon {
         color: var(--google-blue);
         cursor: pointer;
@@ -94,61 +80,29 @@
         border-radius: 50%;
         transition: background-color 0.2s;
       }
-
       .edit-icon:hover {
         background-color: rgba(26, 115, 232, 0.1);
       }
-
-      .verified-badge {
-        color: #1e8e3e;
-        font-size: 14px;
-        margin-left: 5px;
-      }
-
       .form-edit-mode {
         display: none;
       }
-
+      .validation-error {
+        color: #d9534f;
+        font-size: 12px;
+        margin-top: 5px;
+        display: none; /* Hidden by default */
+      }
       .help-text {
         font-size: 12px;
-        color: var(--google-dark-gray);
+        color: #6c757d;
         margin-top: 5px;
       }
-
-      .notification {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: #4caf50;
-        color: white;
-        padding: 15px 25px;
-        border-radius: 4px;
-        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-        display: none;
-        z-index: 1000;
+      .btn-primary {
+        transition: all 0.2s ease-in-out;
       }
-
-      .email-edit-container {
-        position: absolute;
-        top: 0;
-        right: 0;
-      }
-
-      @media (max-width: 768px) {
-        .profile-header {
-          flex-direction: column;
-          text-align: center;
-        }
-
-        .profile-avatar {
-          margin-right: 0;
-          margin-bottom: 15px;
-        }
-
-        .email-edit-container {
-          position: static;
-          margin-top: 10px;
-        }
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(26, 115, 232, 0.3);
       }
     </style>
   </head>
@@ -186,14 +140,15 @@
                 Profiles
               </a>
               <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="">My Profile</a></li>
+                <li>
+                  <a class="dropdown-item" href="/profile/">My Profile</a>
+                </li>
                 <li><a class="dropdown-item" href="#">Settings</a></li>
                 <li><hr class="dropdown-divider" /></li>
                 <li><a class="dropdown-item" href="#">Logout</a></li>
               </ul>
             </li>
           </ul>
-
           <div class="d-flex align-items-center">
             <span class="me-3"
               >Hello, <strong>{{ user.first_name }}</strong></span
@@ -213,7 +168,7 @@
       </div>
     </nav>
 
-    <div class="container my-5">      
+    <div class="container my-5">
       {% if messages %} 
           {% for message in messages %} 
               {% if 'user-update-success' in message.tags %}
@@ -229,16 +184,27 @@
                       aria-label="Close"
                     ></button>
                   </div>
-              {% endif %} 
+              {% endif %}   
               
-              {% if 'error' in message.tags %}
-                  <div class="alert alert-error">
-                    <span><i class="fas fa-exclamation-circle"></i> {{ message }}</span>
-                    <button class="alert-close">&times;</button>
+              {% if 'error' in message.tags or 'ldap_error' in message.tags %}
+                  <div
+                    class="alert alert-danger d-flex align-items-center justify-content-between"
+                    role="alert"
+                  >
+                    <span
+                      ><i class="bi bi-exclamation-triangle-fill me-2"></i>{{ message }}</span
+                    >
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="alert"
+                      aria-label="Close"
+                    ></button>
                   </div>
-              {% endif %}
+              {% endif %} 
           {% endfor %} 
       {% endif %}
+
       <div class="row justify-content-center">
         <div class="col-lg-8">
           <div class="profile-card">
@@ -261,8 +227,12 @@
 
             <div class="form-edit-mode" id="editForm">
               <h5 class="mb-4">Edit Profile Information</h5>
-
-              <form id="profileForm" method="POST" action="/profile/">
+              <form
+                id="profileForm"
+                method="POST"
+                action="/profile/"
+                novalidate
+              >
                 {% csrf_token %}
                 <div class="row mb-3">
                   <div class="col-md-6">
@@ -274,6 +244,7 @@
                       name="first_name"
                       value="{{ user.first_name }}"
                     />
+                    <div id="firstNameError" class="validation-error"></div>
                   </div>
                   <div class="col-md-6">
                     <label for="lastName" class="form-label">Last Name</label>
@@ -284,9 +255,9 @@
                       name="last_name"
                       value="{{ user.last_name }}"
                     />
+                    <div id="lastNameError" class="validation-error"></div>
                   </div>
                 </div>
-
                 <div class="mb-3">
                   <label for="usernameInput" class="form-label">Username</label>
                   <input
@@ -295,10 +266,10 @@
                     id="usernameInput"
                     name="username"
                     value="{{ user.username }}"
-                    readonly
                   />
+                  <div class="help-text">Username can contain letters, numbers, dots (.), and underscores (_).</div>
+                  <div id="usernameError" class="validation-error"></div>
                 </div>
-
                 <div class="mb-3">
                   <label for="emailInput" class="form-label"
                     >Email Address</label
@@ -310,8 +281,8 @@
                     name="email"
                     value="{{ user.email }}"
                   />
+                  <div id="emailError" class="validation-error"></div>
                 </div>
-
                 <div class="mb-3">
                   <label for="phoneInput" class="form-label"
                     >Phone Number</label
@@ -321,11 +292,11 @@
                     class="form-control"
                     id="phoneInput"
                     name="phone_number"
-                    placeholder="1234 56 7890"
                     value="{{ user.phone_number }}"
+                    placeholder="xxxx xx xxxx"
                   />
+                  <div id="phoneError" class="validation-error"></div>
                 </div>
-
                 <div class="d-flex justify-content-end gap-2">
                   <button
                     type="button"
@@ -344,31 +315,22 @@
 
             <div id="displayInfo">
               <h5 class="mb-4">Personal Information</h5>
-
               <div class="info-item">
                 <div>
                   <div class="info-label">USERNAME</div>
-                  <div class="info-value" id="usernameDisplay">
-                    {{ user.username }}
-                  </div>
+                  <div class="info-value">{{ user.username }}</div>
                 </div>
               </div>
-
               <div class="info-item">
                 <div>
                   <div class="info-label">EMAIL</div>
-                  <div class="info-value" id="emailDisplay">
-                    {{ user.email }}
-                  </div>
+                  <div class="info-value">{{ user.email }}</div>
                 </div>
               </div>
-
               <div class="info-item">
                 <div>
                   <div class="info-label">PHONE</div>
-                  <div class="info-value" id="phoneDisplay">
-                    {{ user.phone_number }}
-                  </div>
+                  <div class="info-value">{{ user.phone_number }}</div>
                 </div>
               </div>
             </div>
@@ -377,13 +339,7 @@
       </div>
     </div>
 
-    <div class="notification" id="successNotification">
-      <i class="bi bi-check-circle-fill me-2"></i> Your changes have been saved
-      successfully!
-    </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-
     <script>
       function toggleEditMode() {
         const editForm = document.getElementById("editForm");
@@ -399,10 +355,122 @@
       }
 
       function cancelEdit() {
-        // Simple hide/show is enough, no need to restore values
-        // as the page will reload on a real submission or navigation.
+        // Reset form fields to original values
+        document.getElementById("firstName").value = "{{ user.first_name }}";
+        document.getElementById("lastName").value = "{{ user.last_name }}";
+        document.getElementById("usernameInput").value = "{{ user.username }}";
+        document.getElementById("emailInput").value = "{{ user.email }}";
+        document.getElementById("phoneInput").value = "{{ user.phone_number }}";
+        
+        // Clear any validation errors
+        document.querySelectorAll(".validation-error").forEach(el => {
+          el.style.display = "none";
+        });
+        document.querySelectorAll(".form-control").forEach(el => {
+          el.style.borderColor = "#ddd";
+        });
+        
         toggleEditMode();
       }
+
+      // --- Frontend Form Validation ---
+      document
+        .getElementById("profileForm")
+        .addEventListener("submit", function (event) {
+          let isValid = true;
+
+          // Reset previous errors
+          document
+            .querySelectorAll(".validation-error")
+            .forEach((el) => (el.style.display = "none"));
+          document
+            .querySelectorAll(".form-control")
+            .forEach((el) => (el.style.borderColor = "#ddd"));
+
+          const firstNameInput = document.getElementById("firstName");
+          const lastNameInput = document.getElementById("lastName");
+          const usernameInput = document.getElementById("usernameInput");
+          const emailInput = document.getElementById("emailInput");
+          const phoneInput = document.getElementById("phoneInput");
+          
+          const firstNameError = document.getElementById("firstNameError");
+          const lastNameError = document.getElementById("lastNameError");
+          const usernameError = document.getElementById("usernameError");
+          const emailError = document.getElementById("emailError");
+          const phoneError = document.getElementById("phoneError");
+
+          // First name validation: no spaces allowed
+          const namePattern = /^[^\s]+$/;
+          if (!namePattern.test(firstNameInput.value)) {
+            firstNameError.textContent = "First name cannot contain spaces.";
+            firstNameError.style.display = "block";
+            firstNameInput.style.borderColor = "#d9534f";
+            isValid = false;
+          }
+
+          // Last name validation: no spaces allowed
+          if (!namePattern.test(lastNameInput.value)) {
+            lastNameError.textContent = "Last name cannot contain spaces.";
+            lastNameError.style.display = "block";
+            lastNameInput.style.borderColor = "#d9534f";
+            isValid = false;
+          }
+
+          // Username validation: letters, numbers, dots, and underscores only
+          const usernamePattern = /^[a-zA-Z0-9._]+$/;
+          if (!usernamePattern.test(usernameInput.value)) {
+            usernameError.textContent = "Username can only contain letters, numbers, dots (.), and underscores (_).";
+            usernameError.style.display = "block";
+            usernameInput.style.borderColor = "#d9534f";
+            isValid = false;
+          }
+
+          // Email validation: must contain '@' and at least one '.' after the '@'
+          const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailPattern.test(emailInput.value)) {
+            emailError.textContent =
+              "Please enter a valid email address (e.g., user@example.com).";
+            emailError.style.display = "block";
+            emailInput.style.borderColor = "#d9534f";
+            isValid = false;
+          }
+
+          // Phone number validation: must match xxxx xx xxxx format
+          const phonePattern = /^\d{4} \d{2} \d{4}$/;
+          if (
+            phoneInput.value.trim() !== "" &&
+            !phonePattern.test(phoneInput.value)
+          ) {
+            phoneError.textContent =
+              "Phone number must be in the format xxxx xx xxxx.";
+            phoneError.style.display = "block";
+            phoneInput.style.borderColor = "#d9534f";
+            isValid = false;
+          }
+
+          if (!isValid) {
+            event.preventDefault();
+          }
+        });
+
+      // Auto-format phone number as user types
+      document
+        .getElementById("phoneInput")
+        .addEventListener("input", function (e) {
+          const input = e.target.value.replace(/\D/g, "");
+          let formattedValue = "";
+
+          if (input.length > 0) {
+            formattedValue = input.substring(0, 4);
+            if (input.length > 4) {
+              formattedValue += " " + input.substring(4, 6);
+            }
+            if (input.length > 6) {
+              formattedValue += " " + input.substring(6, 10);
+            }
+          }
+          e.target.value = formattedValue;
+        });
     </script>
   </body>
 </html>
