@@ -134,18 +134,6 @@
         right: 0;
       }
 
-      .phone-error, .username-error {
-        color: #dc3545;
-        font-size: 14px;
-        margin-top: 5px;
-        display: none;
-      }
-
-      .is-invalid {
-        border-color: #dc3545;
-        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
-      }
-
       @media (max-width: 768px) {
         .profile-header {
           flex-direction: column;
@@ -208,7 +196,7 @@
 
           <div class="d-flex align-items-center">
             <span class="me-3"
-              >Hello, <strong id="navUserName">John</strong></span
+              >Hello, <strong>{{ user.first_name }}</strong></span
             >
             <form class="d-flex">
               <input
@@ -225,27 +213,42 @@
       </div>
     </nav>
 
-    <div class="container my-5">
-      <div class="alert alert-success d-flex align-items-center justify-content-between" id="successAlert" style="display: none !important;">
-        <span><i class="bi bi-check-circle-fill me-2"></i>Profile updated successfully!</span>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="alert"
-          aria-label="Close"
-        ></button>
-      </div>
-
+    <div class="container my-5">      
+      {% if messages %} 
+          {% for message in messages %} 
+              {% if 'user-update-success' in message.tags %}
+                  <div
+                    class="alert alert-success d-flex align-items-center justify-content-between"
+                    role="alert"
+                  >
+                    <span><i class="bi bi-check-circle-fill me-2"></i>{{ message }}</span>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="alert"
+                      aria-label="Close"
+                    ></button>
+                  </div>
+              {% endif %} 
+              
+              {% if 'error' in message.tags %}
+                  <div class="alert alert-error">
+                    <span><i class="fas fa-exclamation-circle"></i> {{ message }}</span>
+                    <button class="alert-close">&times;</button>
+                  </div>
+              {% endif %}
+          {% endfor %} 
+      {% endif %}
       <div class="row justify-content-center">
         <div class="col-lg-8">
           <div class="profile-card">
             <div class="profile-header">
               <div class="profile-avatar" id="avatarInitials">
-                JD
+                {{ user.first_name.0 }}{{ user.last_name.0 }}
               </div>
               <div class="profile-info">
                 <h2 id="displayName">
-                  John Doe
+                  {{ user.first_name }} {{ user.last_name }}
                 </h2>
               </div>
               <div class="email-edit-container">
@@ -259,7 +262,8 @@
             <div class="form-edit-mode" id="editForm">
               <h5 class="mb-4">Edit Profile Information</h5>
 
-              <form id="profileForm" method="POST" action="/profile/" onsubmit="return validateForm()">
+              <form id="profileForm" method="POST" action="/profile/">
+                {% csrf_token %}
                 <div class="row mb-3">
                   <div class="col-md-6">
                     <label for="firstName" class="form-label">First Name</label>
@@ -268,8 +272,7 @@
                       class="form-control"
                       id="firstName"
                       name="first_name"
-                      value="John"
-                      required
+                      value="{{ user.first_name }}"
                     />
                   </div>
                   <div class="col-md-6">
@@ -279,8 +282,7 @@
                       class="form-control"
                       id="lastName"
                       name="last_name"
-                      value="Doe"
-                      required
+                      value="{{ user.last_name }}"
                     />
                   </div>
                 </div>
@@ -292,16 +294,9 @@
                     class="form-control"
                     id="usernameInput"
                     name="username"
-                    value="john_doe123"
-                    oninput="validateUsername(this)"
-                    required
+                    value="{{ user.username }}"
+                    readonly
                   />
-                  <div class="username-error" id="usernameError">
-                    Username can only contain letters, numbers, and underscores. @ symbol is not allowed.
-                  </div>
-                  <div class="help-text">
-                    Only letters, numbers, and underscores are allowed
-                  </div>
                 </div>
 
                 <div class="mb-3">
@@ -313,8 +308,7 @@
                     class="form-control"
                     id="emailInput"
                     name="email"
-                    value="john.doe@example.com"
-                    required
+                    value="{{ user.email }}"
                   />
                 </div>
 
@@ -328,16 +322,8 @@
                     id="phoneInput"
                     name="phone_number"
                     placeholder="1234 56 7890"
-                    value="1234 56 7890"
-                    oninput="formatPhoneNumber(this)"
-                    maxlength="12"
+                    value="{{ user.phone_number }}"
                   />
-                  <div class="phone-error" id="phoneError">
-                    Please enter a valid 10-digit phone number in the format: XXXX XX XXXX
-                  </div>
-                  <div class="help-text">
-                    Format: XXXX XX XXXX (10 digits total with spaces)
-                  </div>
                 </div>
 
                 <div class="d-flex justify-content-end gap-2">
@@ -363,7 +349,7 @@
                 <div>
                   <div class="info-label">USERNAME</div>
                   <div class="info-value" id="usernameDisplay">
-                    john_doe123
+                    {{ user.username }}
                   </div>
                 </div>
               </div>
@@ -372,10 +358,7 @@
                 <div>
                   <div class="info-label">EMAIL</div>
                   <div class="info-value" id="emailDisplay">
-                    john.doe@example.com
-                    <span class="verified-badge"
-                      ><i class="bi bi-patch-check-fill"></i> Verified</span
-                    >
+                    {{ user.email }}
                   </div>
                 </div>
               </div>
@@ -384,10 +367,7 @@
                 <div>
                   <div class="info-label">PHONE</div>
                   <div class="info-value" id="phoneDisplay">
-                    1234 56 7890
-                    <span class="verified-badge"
-                      ><i class="bi bi-patch-check-fill"></i> Verified</span
-                    >
+                    {{ user.phone_number }}
                   </div>
                 </div>
               </div>
@@ -405,15 +385,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-      // Initialize with sample data
-      let userData = {
-        first_name: "John",
-        last_name: "Doe",
-        username: "john_doe123",
-        email: "john.doe@example.com",
-        phone_number: "1234 56 7890"
-      };
-
       function toggleEditMode() {
         const editForm = document.getElementById("editForm");
         const displayInfo = document.getElementById("displayInfo");
@@ -424,180 +395,14 @@
         } else {
           editForm.style.display = "block";
           displayInfo.style.display = "none";
-          
-          // Format the phone number for display in the input field
-          const phoneInput = document.getElementById("phoneInput");
-          if (phoneInput.value) {
-            phoneInput.value = formatPhoneForDisplay(phoneInput.value);
-          }
         }
       }
 
       function cancelEdit() {
-        // Reset form values to original
-        document.getElementById("firstName").value = userData.first_name;
-        document.getElementById("lastName").value = userData.last_name;
-        document.getElementById("usernameInput").value = userData.username;
-        document.getElementById("emailInput").value = userData.email;
-        document.getElementById("phoneInput").value = userData.phone_number;
-        
-        // Clear validation errors
-        clearValidationErrors();
-        
+        // Simple hide/show is enough, no need to restore values
+        // as the page will reload on a real submission or navigation.
         toggleEditMode();
       }
-      
-      // Format phone number as user types (4-2-4 format with spaces)
-      function formatPhoneNumber(input) {
-        // Remove all non-digit characters
-        let value = input.value.replace(/\D/g, '');
-        
-        // Limit to 10 digits
-        if (value.length > 10) {
-          value = value.substring(0, 10);
-        }
-        
-        // Format as XXXX XX XXXX (with spaces)
-        if (value.length > 6) {
-          value = value.substring(0, 4) + ' ' + value.substring(4, 6) + ' ' + value.substring(6);
-        } else if (value.length > 4) {
-          value = value.substring(0, 4) + ' ' + value.substring(4);
-        }
-        
-        input.value = value;
-        
-        // Validate and show error if needed
-        const phoneError = document.getElementById("phoneError");
-        const digitsOnly = value.replace(/\s/g, '');
-        
-        if (digitsOnly.length < 10 && digitsOnly.length > 0) {
-          phoneError.style.display = "block";
-          input.classList.add("is-invalid");
-        } else {
-          phoneError.style.display = "none";
-          input.classList.remove("is-invalid");
-        }
-      }
-      
-      // Validate username (no @ symbol, only letters, numbers, underscores)
-      function validateUsername(input) {
-        const username = input.value;
-        const usernameError = document.getElementById("usernameError");
-        const validPattern = /^[a-zA-Z0-9_]+$/;
-        
-        if (username.includes('@')) {
-          usernameError.textContent = "Username cannot contain the @ symbol";
-          usernameError.style.display = "block";
-          input.classList.add("is-invalid");
-          return false;
-        } else if (!validPattern.test(username) && username.length > 0) {
-          usernameError.textContent = "Username can only contain letters, numbers, and underscores";
-          usernameError.style.display = "block";
-          input.classList.add("is-invalid");
-          return false;
-        } else {
-          usernameError.style.display = "none";
-          input.classList.remove("is-invalid");
-          return true;
-        }
-      }
-      
-      // Format phone number for display (with spaces)
-      function formatPhoneForDisplay(phone) {
-        // Remove all non-digit characters
-        let digits = phone.replace(/\D/g, '');
-        
-        // Format as XXXX XX XXXX if we have 10 digits
-        if (digits.length === 10) {
-          return digits.substring(0, 4) + ' ' + digits.substring(4, 6) + ' ' + digits.substring(6);
-        }
-        
-        return phone;
-      }
-      
-      // Clear all validation errors
-      function clearValidationErrors() {
-        document.getElementById("phoneError").style.display = "none";
-        document.getElementById("usernameError").style.display = "none";
-        
-        const inputs = document.querySelectorAll('.form-control');
-        inputs.forEach(input => {
-          input.classList.remove("is-invalid");
-        });
-      }
-      
-      // Validate form before submission
-      function validateForm() {
-        const phoneInput = document.getElementById("phoneInput");
-        const phoneValue = phoneInput.value.replace(/\s/g, '');
-        const usernameInput = document.getElementById("usernameInput");
-        
-        let isValid = true;
-        
-        // Phone number validation (must be exactly 10 digits if provided)
-        if (phoneValue && phoneValue.length !== 10) {
-          document.getElementById("phoneError").style.display = "block";
-          phoneInput.classList.add("is-invalid");
-          phoneInput.focus();
-          isValid = false;
-        }
-        
-        // Username validation
-        if (!validateUsername(usernameInput)) {
-          usernameInput.focus();
-          isValid = false;
-        }
-        
-        if (isValid) {
-          // Update user data
-          userData.first_name = document.getElementById("firstName").value;
-          userData.last_name = document.getElementById("lastName").value;
-          userData.username = document.getElementById("usernameInput").value;
-          userData.email = document.getElementById("emailInput").value;
-          userData.phone_number = document.getElementById("phoneInput").value;
-          
-          // Update display
-          updateDisplay();
-          
-          // Show success message
-          document.getElementById("successAlert").style.display = "flex";
-          setTimeout(() => {
-            document.getElementById("successAlert").style.display = "none";
-          }, 5000);
-          
-          // Hide edit form
-          toggleEditMode();
-        }
-        
-        // Prevent actual form submission for this demo
-        return false;
-      }
-      
-      // Update the display with new values
-      function updateDisplay() {
-        document.getElementById("displayName").textContent = 
-          userData.first_name + " " + userData.last_name;
-        document.getElementById("usernameDisplay").textContent = userData.username;
-        document.getElementById("emailDisplay").innerHTML = 
-          userData.email + ' <span class="verified-badge"><i class="bi bi-patch-check-fill"></i> Verified</span>';
-        document.getElementById("phoneDisplay").innerHTML = 
-          formatPhoneForDisplay(userData.phone_number) + ' <span class="verified-badge"><i class="bi bi-patch-check-fill"></i> Verified</span>';
-        document.getElementById("avatarInitials").textContent = 
-          userData.first_name.charAt(0) + userData.last_name.charAt(0);
-        document.getElementById("navUserName").textContent = userData.first_name;
-      }
-      
-      // Initialize the page
-      document.addEventListener('DOMContentLoaded', function() {
-        // Format the phone number display on page load
-        const phoneDisplay = document.getElementById("phoneDisplay");
-        if (phoneDisplay.textContent.trim()) {
-          phoneDisplay.textContent = formatPhoneForDisplay(userData.phone_number);
-        }
-        
-        // Initialize user data
-        updateDisplay();
-      });
     </script>
   </body>
 </html>
