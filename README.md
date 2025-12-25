@@ -23,8 +23,10 @@ pip install -r requirements.txt
 *The project requires Django 5.2.6, django-auth-ldap 5.2.0, and python-ldap 3.4.4.*
 2. **Database Configuration**:
 The system uses a MySQL database named `accounts_db`. Ensure your MySQL server is running on `localhost:3306` with the user `accountant` and password `Activ8*o`.
+
 3. **Environment Variables**:
 Create a `.env` file in the project root with the following LDAP configurations:
+
 ```env
 AUTH_LDAP_SERVER_URI=ldap://your-ldap-server
 AUTH_LDAP_BIND_DN=cn=admin,dc=example,dc=com
