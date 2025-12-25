@@ -1,21 +1,83 @@
+This comprehensive README.md file provides the full setup process, core features, and API endpoints for your Django LDAP authentication system in a single document:
+
+```markdown
 # Django LDAP Authentication System
 
-A Django-based authentication system integrated with LDAP (Lightweight Directory Access Protocol) for centralized user management, featuring a custom user model and profile synchronization.
+This project is a Django-based authentication system integrated with LDAP for centralized user management, profile synchronization, and automated account provisioning.
 
-## Features
-
-* **Custom User Model**: Extends `AbstractUser` to include a `phone_number` field and automated name capitalization.
-* **Dual Authentication**: Supports both standard Django database authentication and LDAP-based authentication.
-* **LDAP Integration**:
-    * **User Provisioning**: New users are automatically created in the LDAP directory during registration.
-    * **Profile Synchronization**: Updates made to user profiles (name, email, phone) are synchronized between the local database and the LDAP server.
-    * **Automated Deletion**: A Django signal (`pre_delete`) ensures that when a user is deleted from the database, their corresponding LDAP entry is also removed.
-* **Registration Workflow**: Includes a simulated OTP verification step (Phone: `111111`, Email: `222222`) before user creation.
-* **Flexible Login**: Users can authenticate using either their username or email address.
-
-## Prerequisites
-
-### System Dependencies
-The following packages are required to build `python-ldap` and related tools:
+## 1. System Prerequisites
+Before installing Python packages, you must install the following system-level dependencies required for building `python-ldap`:
 ```bash
 sudo apt-get install libldap2-dev libsasl2-dev python3.11-dev
+
+```
+
+## 2. Installation and Setup
+
+1. **Clone and Install**:
+```bash
+git clone <repository-url>
+cd authentication_system_task
+pip install -r requirements.txt
+
+```
+
+
+*The project requires Django 5.2.6, django-auth-ldap 5.2.0, and python-ldap 3.4.4.*
+2. **Database Configuration**:
+The system uses a MySQL database named `accounts_db`. Ensure your MySQL server is running on `localhost:3306` with the user `accountant` and password `Activ8*o`.
+3. **Environment Variables**:
+Create a `.env` file in the project root with the following LDAP configurations:
+```env
+AUTH_LDAP_SERVER_URI=ldap://your-ldap-server
+AUTH_LDAP_BIND_DN=cn=admin,dc=example,dc=com
+AUTH_LDAP_BIND_PASSWORD=your-password
+AUTH_LDAP_SEARCH_BASE_DN=ou=users,dc=example,dc=com
+LDAP_USERS_BASE_DN=ou=users,dc=example,dc=com
+
+```
+
+
+4. **Initialize and Run**:
+```bash
+python manage.py migrate
+python manage.py runserver
+
+```
+
+
+
+## 3. Core Features
+
+* **Custom User Model**: Extends `AbstractUser` with a `phone_number` field and automated name capitalization.
+* **LDAP Integration**: New users created via registration are automatically provisioned in LDAP.
+* **Profile Synchronization**: Updates to name, email, or phone in Django are automatically synced to the LDAP server.
+* **Automated Cleanup**: A `pre_delete` signal ensures LDAP entries are removed when a user is deleted from the Django database.
+* **Verification Codes**: For testing, the system uses static OTPs: **Phone: 111111** and **Email: 222222**.
+
+## 4. API Endpoints
+
+The following endpoints are available under the `/accounts/` path:
+
+* `/login/`: User authentication (supports username or email).
+* `/register/`: Initial registration form.
+* `/verification/`: OTP verification and password setup.
+* `/profile/`: View and edit user information (syncs with LDAP).
+* `/home/`: Protected user dashboard.
+* `/logout/`: Session termination.
+* `/forgot_password/` & `/reset_password/`: Password recovery workflows.
+
+## 5. Management Commands
+
+Create an administrative user in both the local database and the LDAP directory simultaneously:
+
+```bash
+python manage.py create_ldap_superuser --username <user> --email <email>
+
+```
+
+**Supported Arguments**: `--username`, `--email`, `--first_name`, `--last_name`, `--phone_number`, `--password`.
+
+```
+
+```
