@@ -76,7 +76,3 @@ python manage.py create_ldap_superuser --username <user> --email <email>
 ```
 
 **Supported Arguments**: `--username`, `--email`, `--first_name`, `--last_name`, `--phone_number`, `--password`.
-
-```
-
-```
