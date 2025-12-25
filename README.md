@@ -1,6 +1,3 @@
-This comprehensive README.md file provides the full setup process, core features, and API endpoints for your Django LDAP authentication system in a single document:
-
-```markdown
 # Django LDAP Authentication System
 
 This project is a Django-based authentication system integrated with LDAP for centralized user management, profile synchronization, and automated account provisioning.
