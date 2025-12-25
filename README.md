@@ -13,7 +13,7 @@ sudo apt-get install libldap2-dev libsasl2-dev python3.11-dev
 
 1. **Clone and Install**:
 ```bash
-git clone <repository-url>
+git clone 'https://github.com/infin8-innov8/authentication_system_task/tree/main'
 cd authentication_system_task
 pip install -r requirements.txt
 
